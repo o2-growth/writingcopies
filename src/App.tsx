@@ -2,11 +2,38 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import Login from "./pages/Login";
+import AppShell from "./components/AppShell";
+import CreatePage from "./pages/create/Index";
+import LibraryPage from "./pages/library/Index";
+import HistoryPage from "./pages/history/Index";
+import CompanyPage from "./pages/admin/Company";
+import ProductsPage from "./pages/admin/Products";
+import CopywritersPage from "./pages/admin/Copywriters";
 import NotFound from "./pages/NotFound";
+import { Loader2 } from "lucide-react";
 
 const queryClient = new QueryClient();
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -15,8 +42,22 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/login" element={<Login />} />
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppShell />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/create" element={<CreatePage />} />
+            <Route path="/library" element={<LibraryPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/admin/company" element={<CompanyPage />} />
+            <Route path="/admin/products" element={<ProductsPage />} />
+            <Route path="/admin/copywriters" element={<CopywritersPage />} />
+          </Route>
+          <Route path="/" element={<Navigate to="/create" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
