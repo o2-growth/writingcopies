@@ -1,0 +1,1 @@
+ALTER TABLE public.company_settings ADD COLUMN about text, ADD COLUMN past_clients text;

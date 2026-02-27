@@ -21,6 +21,8 @@ export const companySettingsSchema = z.object({
   claims_allowed: z.string().max(2000).optional(),
   disclaimers: z.string().max(2000).optional(),
   language: z.string().max(10).optional(),
+  about: z.string().max(5000).optional(),
+  past_clients: z.string().max(5000).optional(),
 });
 
 export type CompanySettingsInput = z.infer<typeof companySettingsSchema>;
