@@ -26,6 +26,8 @@ export default function Company() {
         claims_allowed: company.claims_allowed ?? '',
         disclaimers: company.disclaimers ?? '',
         language: company.language ?? 'pt-BR',
+        about: company.about ?? '',
+        past_clients: company.past_clients ?? '',
       });
     }
   }, [company, reset]);
@@ -72,6 +74,14 @@ export default function Company() {
             <div className="space-y-2">
               <Label>Disclaimers</Label>
               <Textarea {...register('disclaimers')} rows={2} placeholder="Disclaimers obrigatórios..." />
+            </div>
+            <div className="space-y-2">
+              <Label>Sobre a Empresa</Label>
+              <Textarea {...register('about')} rows={4} placeholder="Conte sobre a história e missão da empresa..." />
+            </div>
+            <div className="space-y-2">
+              <Label>Clientes que já atendeu</Label>
+              <Textarea {...register('past_clients')} rows={3} placeholder="Liste clientes relevantes..." />
             </div>
             <div className="space-y-2">
               <Label>Idioma</Label>

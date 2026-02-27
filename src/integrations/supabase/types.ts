@@ -102,6 +102,7 @@ export type Database = {
       }
       company_settings: {
         Row: {
+          about: string | null
           audience: string | null
           brand_name: string
           brand_voice: string
@@ -110,10 +111,12 @@ export type Database = {
           id: string
           language: string | null
           owner_id: string
+          past_clients: string | null
           updated_at: string | null
           usp: string | null
         }
         Insert: {
+          about?: string | null
           audience?: string | null
           brand_name: string
           brand_voice: string
@@ -122,10 +125,12 @@ export type Database = {
           id?: string
           language?: string | null
           owner_id: string
+          past_clients?: string | null
           updated_at?: string | null
           usp?: string | null
         }
         Update: {
+          about?: string | null
           audience?: string | null
           brand_name?: string
           brand_voice?: string
@@ -134,6 +139,7 @@ export type Database = {
           id?: string
           language?: string | null
           owner_id?: string
+          past_clients?: string | null
           updated_at?: string | null
           usp?: string | null
         }
