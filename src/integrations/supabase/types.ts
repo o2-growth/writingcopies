@@ -14,7 +14,340 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      approved_copies: {
+        Row: {
+          body: string
+          channel: string
+          copy_type: string
+          copywriter_a_id: string | null
+          copywriter_b_id: string | null
+          created_at: string | null
+          generation_id: string | null
+          id: string
+          notes: string | null
+          objective: string
+          owner_id: string
+          product_id: string | null
+          size: string
+          tags: string[] | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          body: string
+          channel: string
+          copy_type: string
+          copywriter_a_id?: string | null
+          copywriter_b_id?: string | null
+          created_at?: string | null
+          generation_id?: string | null
+          id?: string
+          notes?: string | null
+          objective: string
+          owner_id: string
+          product_id?: string | null
+          size: string
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          body?: string
+          channel?: string
+          copy_type?: string
+          copywriter_a_id?: string | null
+          copywriter_b_id?: string | null
+          created_at?: string | null
+          generation_id?: string | null
+          id?: string
+          notes?: string | null
+          objective?: string
+          owner_id?: string
+          product_id?: string | null
+          size?: string
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approved_copies_copywriter_a_id_fkey"
+            columns: ["copywriter_a_id"]
+            isOneToOne: false
+            referencedRelation: "copywriters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approved_copies_copywriter_b_id_fkey"
+            columns: ["copywriter_b_id"]
+            isOneToOne: false
+            referencedRelation: "copywriters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approved_copies_generation_id_fkey"
+            columns: ["generation_id"]
+            isOneToOne: false
+            referencedRelation: "generations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approved_copies_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_settings: {
+        Row: {
+          audience: string | null
+          brand_name: string
+          brand_voice: string
+          claims_allowed: string | null
+          disclaimers: string | null
+          id: string
+          language: string | null
+          owner_id: string
+          updated_at: string | null
+          usp: string | null
+        }
+        Insert: {
+          audience?: string | null
+          brand_name: string
+          brand_voice: string
+          claims_allowed?: string | null
+          disclaimers?: string | null
+          id?: string
+          language?: string | null
+          owner_id: string
+          updated_at?: string | null
+          usp?: string | null
+        }
+        Update: {
+          audience?: string | null
+          brand_name?: string
+          brand_voice?: string
+          claims_allowed?: string | null
+          disclaimers?: string | null
+          id?: string
+          language?: string | null
+          owner_id?: string
+          updated_at?: string | null
+          usp?: string | null
+        }
+        Relationships: []
+      }
+      copywriter_preferences: {
+        Row: {
+          copywriter_id: string
+          id: string
+          is_active: boolean
+          owner_id: string
+        }
+        Insert: {
+          copywriter_id: string
+          id?: string
+          is_active?: boolean
+          owner_id: string
+        }
+        Update: {
+          copywriter_id?: string
+          id?: string
+          is_active?: boolean
+          owner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "copywriter_preferences_copywriter_id_fkey"
+            columns: ["copywriter_id"]
+            isOneToOne: false
+            referencedRelation: "copywriters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      copywriter_samples: {
+        Row: {
+          body: string
+          copywriter_id: string
+          created_at: string | null
+          id: string
+          source: string | null
+          title: string | null
+        }
+        Insert: {
+          body: string
+          copywriter_id: string
+          created_at?: string | null
+          id?: string
+          source?: string | null
+          title?: string | null
+        }
+        Update: {
+          body?: string
+          copywriter_id?: string
+          created_at?: string | null
+          id?: string
+          source?: string | null
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "copywriter_samples_copywriter_id_fkey"
+            columns: ["copywriter_id"]
+            isOneToOne: false
+            referencedRelation: "copywriters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      copywriters: {
+        Row: {
+          donts: string | null
+          dos: string | null
+          era: string | null
+          id: string
+          is_preset: boolean
+          name: string
+          notes: string | null
+          style_guide_text: string
+        }
+        Insert: {
+          donts?: string | null
+          dos?: string | null
+          era?: string | null
+          id?: string
+          is_preset?: boolean
+          name: string
+          notes?: string | null
+          style_guide_text: string
+        }
+        Update: {
+          donts?: string | null
+          dos?: string | null
+          era?: string | null
+          id?: string
+          is_preset?: boolean
+          name?: string
+          notes?: string | null
+          style_guide_text?: string
+        }
+        Relationships: []
+      }
+      generations: {
+        Row: {
+          channel: string
+          copy_type: string
+          copywriter_a_id: string | null
+          copywriter_b_id: string | null
+          created_at: string | null
+          id: string
+          objective: string
+          owner_id: string
+          product_id: string | null
+          prompt_compiled: string
+          quantity: number
+          result_json: Json
+          size: string
+        }
+        Insert: {
+          channel: string
+          copy_type: string
+          copywriter_a_id?: string | null
+          copywriter_b_id?: string | null
+          created_at?: string | null
+          id?: string
+          objective: string
+          owner_id: string
+          product_id?: string | null
+          prompt_compiled: string
+          quantity: number
+          result_json: Json
+          size: string
+        }
+        Update: {
+          channel?: string
+          copy_type?: string
+          copywriter_a_id?: string | null
+          copywriter_b_id?: string | null
+          created_at?: string | null
+          id?: string
+          objective?: string
+          owner_id?: string
+          product_id?: string | null
+          prompt_compiled?: string
+          quantity?: number
+          result_json?: Json
+          size?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generations_copywriter_a_id_fkey"
+            columns: ["copywriter_a_id"]
+            isOneToOne: false
+            referencedRelation: "copywriters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generations_copywriter_b_id_fkey"
+            columns: ["copywriter_b_id"]
+            isOneToOne: false
+            referencedRelation: "copywriters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "generations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          benefits: string | null
+          created_at: string | null
+          description: string | null
+          features: string | null
+          id: string
+          links: string | null
+          name: string
+          objections: string | null
+          owner_id: string
+          pricing_notes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          benefits?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string | null
+          id?: string
+          links?: string | null
+          name: string
+          objections?: string | null
+          owner_id: string
+          pricing_notes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          benefits?: string | null
+          created_at?: string | null
+          description?: string | null
+          features?: string | null
+          id?: string
+          links?: string | null
+          name?: string
+          objections?: string | null
+          owner_id?: string
+          pricing_notes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
