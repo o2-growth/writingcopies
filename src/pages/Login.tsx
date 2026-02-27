@@ -15,11 +15,20 @@ export default function Login() {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
+  const [forgotMode, setForgotMode] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      if (isSignUp) {
+      if (forgotMode) {
+        const { error } = await (await import('@/integrations/supabase/client')).supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success('Email de recuperação enviado! Verifique sua caixa de entrada.');
+        setForgotMode(false);
+      } else if (isSignUp) {
         await signUp(email, password);
         toast.success('Conta criada! Verifique seu email para confirmar.');
       } else {
@@ -41,7 +50,7 @@ export default function Login() {
             Copy<span className="text-primary">Lab</span>
           </CardTitle>
           <CardDescription>
-            {isSignUp ? 'Crie sua conta' : 'Acesse sua conta'}
+            {forgotMode ? 'Recuperar senha' : isSignUp ? 'Crie sua conta' : 'Acesse sua conta'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -57,29 +66,40 @@ export default function Login() {
                 placeholder="seu@email.com"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                minLength={6}
-                placeholder="••••••••"
-              />
-            </div>
+            {!forgotMode && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Senha</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  placeholder="••••••••"
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Aguarde...' : isSignUp ? 'Criar conta' : 'Entrar'}
+              {loading ? 'Aguarde...' : forgotMode ? 'Enviar link' : isSignUp ? 'Criar conta' : 'Entrar'}
             </Button>
           </form>
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center space-y-2">
+            {!forgotMode && !isSignUp && (
+              <button
+                type="button"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors block w-full"
+                onClick={() => setForgotMode(true)}
+              >
+                Esqueceu a senha?
+              </button>
+            )}
             <button
               type="button"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              onClick={() => setIsSignUp(!isSignUp)}
+              onClick={() => { setIsSignUp(!isSignUp); setForgotMode(false); }}
             >
-              {isSignUp ? 'Já tem conta? Entrar' : 'Não tem conta? Criar'}
+              {forgotMode ? 'Voltar ao login' : isSignUp ? 'Já tem conta? Entrar' : 'Não tem conta? Criar'}
             </button>
           </div>
         </CardContent>
