@@ -12,46 +12,46 @@
   :root {
     /* Surfaces */
     --background: 0 0% 98%;
-    --foreground: 240 6% 10%;
+    --foreground: 0 0% 29%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 6% 10%;
+    --card-foreground: 0 0% 29%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 6% 10%;
+    --popover-foreground: 0 0% 29%;
 
-    /* Apple System Blue as primary */
-    --primary: 211 100% 50%;
+    /* Vivid Green primary */
+    --primary: 119 84% 68%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4% 95%;
-    --secondary-foreground: 240 6% 10%;
+    --secondary: 0 0% 93%;
+    --secondary-foreground: 0 0% 29%;
 
-    --muted: 240 4% 95%;
-    --muted-foreground: 240 4% 46%;
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 211 100% 95%;
-    --accent-foreground: 211 100% 35%;
+    --accent: 119 60% 92%;
+    --accent-foreground: 119 50% 30%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 5% 88%;
-    --input: 240 5% 88%;
-    --ring: 211 100% 50%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 119 84% 68%;
 
     /* Border radius — Apple uses 12-16px */
     --radius: 0.75rem;
 
     /* Sidebar */
     --sidebar-background: 0 0% 97%;
-    --sidebar-foreground: 240 6% 25%;
-    --sidebar-primary: 211 100% 50%;
+    --sidebar-foreground: 0 0% 35%;
+    --sidebar-primary: 119 84% 68%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 211 100% 95%;
-    --sidebar-accent-foreground: 211 100% 35%;
-    --sidebar-border: 240 5% 90%;
-    --sidebar-ring: 211 100% 50%;
+    --sidebar-accent: 119 60% 92%;
+    --sidebar-accent-foreground: 119 50% 30%;
+    --sidebar-border: 0 0% 88%;
+    --sidebar-ring: 119 84% 68%;
 
     /* Glassmorphism helpers */
     --glass-bg: 0 0% 100% / 0.72;
@@ -72,35 +72,35 @@
     --popover: 240 5% 11%;
     --popover-foreground: 0 0% 96%;
 
-    /* Apple blue stays bright in dark mode */
-    --primary: 211 100% 55%;
+    /* Vivid green in dark mode */
+    --primary: 119 84% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4% 17%;
+    --secondary: 0 0% 17%;
     --secondary-foreground: 0 0% 96%;
 
-    --muted: 240 4% 17%;
-    --muted-foreground: 240 4% 60%;
+    --muted: 0 0% 17%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 211 80% 20%;
-    --accent-foreground: 211 100% 70%;
+    --accent: 119 40% 18%;
+    --accent-foreground: 119 70% 70%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 4% 18%;
-    --input: 240 4% 18%;
-    --ring: 211 100% 55%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 119 84% 60%;
 
     /* Sidebar dark */
-    --sidebar-background: 240 6% 9%;
-    --sidebar-foreground: 240 4% 80%;
-    --sidebar-primary: 211 100% 55%;
+    --sidebar-background: 0 0% 9%;
+    --sidebar-foreground: 0 0% 80%;
+    --sidebar-primary: 119 84% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 211 80% 18%;
-    --sidebar-accent-foreground: 211 100% 70%;
-    --sidebar-border: 240 4% 16%;
-    --sidebar-ring: 211 100% 55%;
+    --sidebar-accent: 119 40% 18%;
+    --sidebar-accent-foreground: 119 70% 70%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 119 84% 60%;
 
     --glass-bg: 240 5% 11% / 0.80;
     --glass-border: 240 4% 20% / 0.6;

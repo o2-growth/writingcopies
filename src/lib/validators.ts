@@ -24,10 +24,6 @@ export const companySettingsSchema = z.object({
   language: z.string().max(10).optional(),
   about: z.string().max(5000).optional(),
   past_clients: z.string().max(5000).optional(),
-  champion_video_copy: z.string().max(10000).optional(),
-  champion_video_url: z.string().url('URL inválida').max(2000).or(z.literal('')).optional(),
-  champion_static_copy: z.string().max(10000).optional(),
-  champion_static_url: z.string().url('URL inválida').max(2000).or(z.literal('')).optional(),
 });
 
 export type CompanySettingsInput = z.infer<typeof companySettingsSchema>;

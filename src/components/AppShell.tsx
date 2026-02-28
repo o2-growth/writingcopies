@@ -126,48 +126,23 @@ export default function AppShell() {
       {/* Footer */}
       <div className={cn('p-3 border-t border-border space-y-1', collapsed && !forMobile && 'px-2')}>
         {collapsed && !forMobile ? (
-          <>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="w-full rounded-xl h-10"
-                  onClick={() => setTheme(isDark ? 'light' : 'dark')}
-                >
-                  {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{isDark ? 'Modo claro' : 'Modo escuro'}</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="w-full rounded-xl h-10 text-muted-foreground" onClick={() => signOut()}>
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right">Sair</TooltipContent>
-            </Tooltip>
-          </>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="w-full rounded-xl h-10 text-muted-foreground" onClick={() => signOut()}>
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">Sair</TooltipContent>
+          </Tooltip>
         ) : (
-          <>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-3 text-muted-foreground rounded-xl"
-              onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              {isDark ? 'Modo claro' : 'Modo escuro'}
-            </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-3 text-muted-foreground rounded-xl"
-              onClick={() => signOut()}
-            >
-              <LogOut className="h-4 w-4" />
-              Sair
-            </Button>
-          </>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground rounded-xl"
+            onClick={() => signOut()}
+          >
+            <LogOut className="h-4 w-4" />
+            Sair
+          </Button>
         )}
       </div>
     </div>
@@ -210,6 +185,18 @@ export default function AppShell() {
               Copy<span className="text-primary">Lab</span>
             </h1>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-xl"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </Button>
+        </header>
+
+        {/* Desktop top bar with theme toggle */}
+        <header className="hidden md:flex items-center justify-end px-8 py-3 border-b border-border">
           <Button
             variant="ghost"
             size="icon"
