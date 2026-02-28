@@ -47,7 +47,7 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">
-            Copy<span className="text-primary">Lab</span>
+            <span className="text-primary">Oxy</span> Writer
           </CardTitle>
           <CardDescription>
             {forgotMode ? 'Recuperar senha' : isSignUp ? 'Crie sua conta' : 'Acesse sua conta'}

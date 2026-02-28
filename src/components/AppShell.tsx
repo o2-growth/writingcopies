@@ -88,9 +88,8 @@ export default function AppShell() {
       {/* Logo */}
       <div className={cn('flex items-center p-4 border-b border-border', collapsed && !forMobile ? 'justify-center' : 'justify-between')}>
         {(!collapsed || forMobile) &&
-      <h1 className="text-lg font-bold tracking-tight text-foreground">OxyWriter
-
-        <span className="text-primary">Lab</span>
+      <h1 className="text-lg font-bold tracking-tight text-foreground">
+            <span className="text-primary">Oxy</span> Writer
           </h1>}
         {!forMobile &&
       <Button
@@ -182,7 +181,7 @@ export default function AppShell() {
               <Menu className="h-5 w-5" />
             </Button>
             <h1 className="text-lg font-bold">
-              Copy<span className="text-primary">Lab</span>
+              <span className="text-primary">Oxy</span> Writer
             </h1>
           </div>
           <Button
