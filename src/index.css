@@ -20,8 +20,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 29%;
 
-    /* Vivid Green primary */
-    --primary: 119 84% 68%;
+    /* Rich Green primary */
+    --primary: 142 64% 40%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 93%;
@@ -30,15 +30,15 @@
     --muted: 0 0% 93%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 119 60% 92%;
-    --accent-foreground: 119 50% 30%;
+    --accent: 142 40% 92%;
+    --accent-foreground: 142 50% 25%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 85%;
     --input: 0 0% 85%;
-    --ring: 119 84% 68%;
+    --ring: 142 64% 40%;
 
     /* Border radius — Apple uses 12-16px */
     --radius: 0.75rem;
@@ -46,12 +46,12 @@
     /* Sidebar */
     --sidebar-background: 0 0% 97%;
     --sidebar-foreground: 0 0% 35%;
-    --sidebar-primary: 119 84% 68%;
+    --sidebar-primary: 142 64% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 119 60% 92%;
-    --sidebar-accent-foreground: 119 50% 30%;
+    --sidebar-accent: 142 40% 92%;
+    --sidebar-accent-foreground: 142 50% 25%;
     --sidebar-border: 0 0% 88%;
-    --sidebar-ring: 119 84% 68%;
+    --sidebar-ring: 142 64% 40%;
 
     /* Glassmorphism helpers */
     --glass-bg: 0 0% 100% / 0.72;
@@ -72,8 +72,8 @@
     --popover: 240 5% 11%;
     --popover-foreground: 0 0% 96%;
 
-    /* Vivid green in dark mode */
-    --primary: 119 84% 60%;
+    /* Rich green in dark mode */
+    --primary: 142 64% 45%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 17%;
@@ -82,25 +82,25 @@
     --muted: 0 0% 17%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 119 40% 18%;
-    --accent-foreground: 119 70% 70%;
+    --accent: 142 30% 18%;
+    --accent-foreground: 142 60% 70%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 0 0% 18%;
     --input: 0 0% 18%;
-    --ring: 119 84% 60%;
+    --ring: 142 64% 45%;
 
     /* Sidebar dark */
     --sidebar-background: 0 0% 9%;
     --sidebar-foreground: 0 0% 80%;
-    --sidebar-primary: 119 84% 60%;
+    --sidebar-primary: 142 64% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 119 40% 18%;
-    --sidebar-accent-foreground: 119 70% 70%;
+    --sidebar-accent: 142 30% 18%;
+    --sidebar-accent-foreground: 142 60% 70%;
     --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 119 84% 60%;
+    --sidebar-ring: 142 64% 45%;
 
     --glass-bg: 240 5% 11% / 0.80;
     --glass-border: 240 4% 20% / 0.6;
