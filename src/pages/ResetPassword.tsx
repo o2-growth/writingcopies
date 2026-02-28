@@ -43,7 +43,7 @@ export default function ResetPassword() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">
-            Copy<span className="text-primary">Lab</span>
+            <span className="text-primary">Oxy</span> Writer
           </CardTitle>
           <CardDescription>Defina sua nova senha</CardDescription>
         </CardHeader>
