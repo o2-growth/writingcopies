@@ -145,6 +145,57 @@ export type Database = {
         }
         Relationships: []
       }
+      copy_champions: {
+        Row: {
+          champion_at: string
+          channel: string
+          copy_id: string
+          created_at: string
+          format: string
+          id: string
+          owner_id: string
+          product_id: string | null
+          replaced_at: string | null
+        }
+        Insert: {
+          champion_at?: string
+          channel: string
+          copy_id: string
+          created_at?: string
+          format: string
+          id?: string
+          owner_id: string
+          product_id?: string | null
+          replaced_at?: string | null
+        }
+        Update: {
+          champion_at?: string
+          channel?: string
+          copy_id?: string
+          created_at?: string
+          format?: string
+          id?: string
+          owner_id?: string
+          product_id?: string | null
+          replaced_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "copy_champions_copy_id_fkey"
+            columns: ["copy_id"]
+            isOneToOne: false
+            referencedRelation: "approved_copies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "copy_champions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       copywriter_preferences: {
         Row: {
           copywriter_id: string
