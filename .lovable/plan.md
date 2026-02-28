@@ -1,17 +1,16 @@
 
 
-## Plan: Adjust green primary for better contrast with white text
+## Plan: Update logo name to "Oxy Writer"
 
-The current primary `119 84% 68%` (light vivid green) has insufficient contrast against white text (fails WCAG AA). 
+Update the logo text in 4 locations:
 
-### Change in `src/index.css`
+### 1. `src/components/AppShell.tsx`
+- **Desktop sidebar (line 91-93)**: Change to `<span className="text-primary">Oxy</span> Writer` (Oxy in green, Writer in foreground/white)
+- **Mobile header (line 184-186)**: Same change
 
-Darken the primary green to improve readability:
+### 2. `src/pages/Login.tsx` (line 49-51)
+- Change `Copy<span>Lab</span>` → `<span className="text-primary">Oxy</span> Writer`
 
-- **Light mode**: `--primary: 142 64% 40%` (~#25A244 — a rich, darker green with strong white text contrast)
-- **Dark mode**: `--primary: 142 64% 45%` (slightly brighter for dark backgrounds)
-- Update `--ring`, `--sidebar-primary`, `--sidebar-ring` to match
-- Adjust `--accent` and `--sidebar-accent` tones to harmonize with the new green
-
-This keeps the green identity but shifts to a deeper tone that passes WCAG AA contrast with white foreground text.
+### 3. `src/pages/ResetPassword.tsx` (line 45-47)
+- Same change as Login
 
