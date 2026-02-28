@@ -29,7 +29,13 @@ export const CHANNELS = [
   { value: 'whatsapp', label: 'WhatsApp' },
 ] as const;
 
+export const FORMATS = [
+  { value: 'video',  label: 'Vídeo' },
+  { value: 'static', label: 'Estático' },
+] as const;
+
 export type CopyType = typeof COPY_TYPES[number]['value'];
 export type Size = typeof SIZES[number]['value'];
 export type Objective = typeof OBJECTIVES[number]['value'];
 export type Channel = typeof CHANNELS[number]['value'];
+export type Format = typeof FORMATS[number]['value'];

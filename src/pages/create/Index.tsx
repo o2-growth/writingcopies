@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateCopySchema, type GenerateCopyInput } from '@/lib/validators';
-import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS } from '@/lib/constants';
+import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS, FORMATS } from '@/lib/constants';
 import { useProducts } from '@/hooks/useProducts';
 import { useCopywriters } from '@/hooks/useCopywriters';
 import { useCompany } from '@/hooks/useCompany';
@@ -40,6 +40,7 @@ export default function CreatePage() {
       size: 'M',
       objective: 'conversao',
       channel: 'instagram',
+      format: undefined,
     },
   });
 
@@ -82,6 +83,7 @@ export default function CreatePage() {
         objective: lastInput.objective,
         copy_type: lastInput.copy_type,
         size: lastInput.size,
+        format: lastInput.format || null,
         product_id: lastInput.product_id || null,
         copywriter_a_id: lastInput.copywriter_ids[0] || null,
         copywriter_b_id: lastInput.copywriter_ids[1] || null,
@@ -214,6 +216,23 @@ export default function CreatePage() {
                     <SelectItem value="1">1 copy</SelectItem>
                     <SelectItem value="2">2 copies</SelectItem>
                     <SelectItem value="3">3 copies</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Formato</Label>
+            <Controller
+              name="format"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar formato" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Não definir</SelectItem>
+                    {FORMATS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}

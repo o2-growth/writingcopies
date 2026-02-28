@@ -7,6 +7,7 @@ export const generateCopySchema = z.object({
   objective: z.enum(['awareness', 'engajamento', 'leads', 'conversao', 'vendas']),
   copy_type: z.enum(['titulo', 'subtitulo', 'corpo', 'cta', 'completa']),
   size: z.enum(['S', 'M', 'L', 'XL']),
+  format: z.enum(['video', 'static']).optional(),
   quantity: z.number().int().min(1).max(3),
   extra_context: z.string().max(2000).optional(),
 });
@@ -23,6 +24,10 @@ export const companySettingsSchema = z.object({
   language: z.string().max(10).optional(),
   about: z.string().max(5000).optional(),
   past_clients: z.string().max(5000).optional(),
+  champion_video_copy: z.string().max(10000).optional(),
+  champion_video_url: z.string().url('URL inválida').max(2000).or(z.literal('')).optional(),
+  champion_static_copy: z.string().max(10000).optional(),
+  champion_static_url: z.string().url('URL inválida').max(2000).or(z.literal('')).optional(),
 });
 
 export type CompanySettingsInput = z.infer<typeof companySettingsSchema>;

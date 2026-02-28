@@ -22,6 +22,7 @@ export type Database = {
           copywriter_a_id: string | null
           copywriter_b_id: string | null
           created_at: string | null
+          format: 'video' | 'static' | null
           generation_id: string | null
           id: string
           notes: string | null
@@ -40,6 +41,7 @@ export type Database = {
           copywriter_a_id?: string | null
           copywriter_b_id?: string | null
           created_at?: string | null
+          format?: 'video' | 'static' | null
           generation_id?: string | null
           id?: string
           notes?: string | null
@@ -58,6 +60,7 @@ export type Database = {
           copywriter_a_id?: string | null
           copywriter_b_id?: string | null
           created_at?: string | null
+          format?: 'video' | 'static' | null
           generation_id?: string | null
           id?: string
           notes?: string | null
@@ -106,6 +109,10 @@ export type Database = {
           audience: string | null
           brand_name: string
           brand_voice: string
+          champion_static_copy: string | null
+          champion_static_url: string | null
+          champion_video_copy: string | null
+          champion_video_url: string | null
           claims_allowed: string | null
           disclaimers: string | null
           id: string
@@ -120,6 +127,10 @@ export type Database = {
           audience?: string | null
           brand_name: string
           brand_voice: string
+          champion_static_copy?: string | null
+          champion_static_url?: string | null
+          champion_video_copy?: string | null
+          champion_video_url?: string | null
           claims_allowed?: string | null
           disclaimers?: string | null
           id?: string
@@ -134,6 +145,10 @@ export type Database = {
           audience?: string | null
           brand_name?: string
           brand_voice?: string
+          champion_static_copy?: string | null
+          champion_static_url?: string | null
+          champion_video_copy?: string | null
+          champion_video_url?: string | null
           claims_allowed?: string | null
           disclaimers?: string | null
           id?: string
@@ -144,6 +159,57 @@ export type Database = {
           usp?: string | null
         }
         Relationships: []
+      }
+      copy_champions: {
+        Row: {
+          champion_at: string
+          channel: string
+          copy_id: string
+          created_at: string
+          format: 'video' | 'static'
+          id: string
+          owner_id: string
+          product_id: string | null
+          replaced_at: string | null
+        }
+        Insert: {
+          champion_at?: string
+          channel: string
+          copy_id: string
+          created_at?: string
+          format: 'video' | 'static'
+          id?: string
+          owner_id: string
+          product_id?: string | null
+          replaced_at?: string | null
+        }
+        Update: {
+          champion_at?: string
+          channel?: string
+          copy_id?: string
+          created_at?: string
+          format?: 'video' | 'static'
+          id?: string
+          owner_id?: string
+          product_id?: string | null
+          replaced_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "copy_champions_copy_id_fkey"
+            columns: ["copy_id"]
+            isOneToOne: false
+            referencedRelation: "approved_copies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "copy_champions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       copywriter_preferences: {
         Row: {
@@ -249,6 +315,7 @@ export type Database = {
           copywriter_a_id: string | null
           copywriter_b_id: string | null
           created_at: string | null
+          format: 'video' | 'static' | null
           id: string
           objective: string
           owner_id: string
@@ -264,6 +331,7 @@ export type Database = {
           copywriter_a_id?: string | null
           copywriter_b_id?: string | null
           created_at?: string | null
+          format?: 'video' | 'static' | null
           id?: string
           objective: string
           owner_id: string
@@ -279,6 +347,7 @@ export type Database = {
           copywriter_a_id?: string | null
           copywriter_b_id?: string | null
           created_at?: string | null
+          format?: 'video' | 'static' | null
           id?: string
           objective?: string
           owner_id?: string
