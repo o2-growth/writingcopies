@@ -235,6 +235,8 @@ export default function CreatePage() {
                     <SelectItem value="1">1 copy</SelectItem>
                     <SelectItem value="2">2 copies</SelectItem>
                     <SelectItem value="3">3 copies</SelectItem>
+                    <SelectItem value="4">4 copies</SelectItem>
+                    <SelectItem value="5">5 copies</SelectItem>
                   </SelectContent>
                 </Select>
               )}

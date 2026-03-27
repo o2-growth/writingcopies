@@ -193,6 +193,11 @@ ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
 ${product.pricing_notes ? `Pricing: ${product.pricing_notes}` : ""}` : ""}
 
+${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
+${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
+${editorialLine.content_style ? `Estilo do conteúdo: ${editorialLine.content_style}` : ""}
+${editorialLine.champion_examples ? `Exemplos de copies campeãs:\n${editorialLine.champion_examples}` : ""}` : ""}
+
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
 **Tipo:** ${body.copy_type}
