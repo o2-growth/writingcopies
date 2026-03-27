@@ -35,8 +35,7 @@ export const productSchema = z.object({
   benefits: z.string().max(5000).optional(),
   features: z.string().max(5000).optional(),
   objections: z.string().max(5000).optional(),
-  pricing_notes: z.string().max(2000).optional(),
-  links: z.string().max(2000).optional(),
+  pain_points: z.string().max(5000).optional(),
 });
 
 export type ProductInput = z.infer<typeof productSchema>;

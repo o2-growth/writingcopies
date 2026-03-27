@@ -23,7 +23,7 @@ export default function Products() {
 
   const openNew = () => {
     setEditId(null);
-    reset({ name: '', description: '', benefits: '', features: '', objections: '', pricing_notes: '', links: '' });
+    reset({ name: '', description: '', benefits: '', features: '', objections: '', pain_points: '' });
     setDialogOpen(true);
   };
 
@@ -35,8 +35,7 @@ export default function Products() {
       benefits: p.benefits ?? '',
       features: p.features ?? '',
       objections: p.objections ?? '',
-      pricing_notes: p.pricing_notes ?? '',
-      links: p.links ?? '',
+      pain_points: p.pain_points ?? '',
     });
     setDialogOpen(true);
   };
@@ -111,8 +110,7 @@ export default function Products() {
             <div className="space-y-2"><Label>Benefícios</Label><Textarea {...register('benefits')} rows={2} /></div>
             <div className="space-y-2"><Label>Features</Label><Textarea {...register('features')} rows={2} /></div>
             <div className="space-y-2"><Label>Objeções</Label><Textarea {...register('objections')} rows={2} /></div>
-            <div className="space-y-2"><Label>Notas de Preço</Label><Input {...register('pricing_notes')} /></div>
-            <div className="space-y-2"><Label>Links</Label><Input {...register('links')} /></div>
+            <div className="space-y-2"><Label>Quais dores resolve</Label><Textarea {...register('pain_points')} rows={2} /></div>
             <Button type="submit" disabled={create.isPending || update.isPending}>
               {editId ? 'Salvar' : 'Criar'}
             </Button>
