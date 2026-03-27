@@ -6,6 +6,7 @@ import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS, FORMATS } from '@/lib/constant
 import { useProducts } from '@/hooks/useProducts';
 import { useCopywriters } from '@/hooks/useCopywriters';
 import { useCompany } from '@/hooks/useCompany';
+import { useEditorialLines } from '@/hooks/useEditorialLines';
 import { useGenerateCopy } from '@/hooks/useGenerateCopy';
 import { useApprovedCopies } from '@/hooks/useApprovedCopies';
 import CopyResultCard from '@/components/CopyResultCard';
