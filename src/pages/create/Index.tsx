@@ -143,6 +143,23 @@ export default function CreatePage() {
           </div>
 
           <div className="space-y-2">
+            <Label>Linha Editorial</Label>
+            <Controller
+              name="editorial_line_id"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar linha editorial" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sem linha editorial</SelectItem>
+                    {editorialLines.map(el => <SelectItem key={el.id} value={el.id}>{el.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label>Canal</Label>
             <Controller
               name="channel"
