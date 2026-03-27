@@ -1,44 +1,21 @@
 
 
-## Plan: Add "Linha Editorial" admin section
+## Plan: Add "Linha Editorial" field to Create page + quantity 5
 
-### 1. Database migration
-Create a new `editorial_lines` table:
+### 1. Schema & Validation — `src/lib/validators.ts`
+- Add `editorial_line_id: z.string().uuid().optional()` to `generateCopySchema`
+- Change quantity max from 3 to 5
 
-```sql
-CREATE TABLE public.editorial_lines (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  owner_id uuid NOT NULL,
-  name text NOT NULL,
-  objective text,
-  content_style text,
-  champion_examples text,
-  created_at timestamptz DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
-);
+### 2. Create Page — `src/pages/create/Index.tsx`
+- Import `useEditorialLines` hook
+- Add a Select field for "Linha Editorial" (optional, same pattern as Product select with "none" option)
+- Update quantity Select to include options 4 and 5
 
-ALTER TABLE public.editorial_lines ENABLE ROW LEVEL SECURITY;
+### 3. Edge Function — `supabase/functions/generate-copy/index.ts`
+- Update validation: accept quantity up to 5, accept optional `editorial_line_id`
+- If `editorial_line_id` provided, fetch the editorial line from DB (verify owner_id)
+- Inject editorial line context into the user prompt (name, objective, content_style, champion_examples)
 
-CREATE POLICY "Users can view own editorial lines" ON public.editorial_lines FOR SELECT USING (owner_id = auth.uid());
-CREATE POLICY "Users can insert own editorial lines" ON public.editorial_lines FOR INSERT WITH CHECK (owner_id = auth.uid());
-CREATE POLICY "Users can update own editorial lines" ON public.editorial_lines FOR UPDATE USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
-CREATE POLICY "Users can delete own editorial lines" ON public.editorial_lines FOR DELETE USING (owner_id = auth.uid());
-```
-
-Fields:
-- **name** — Nome da Linha Editorial (required)
-- **objective** — Objetivo
-- **content_style** — Estilo do conteúdo
-- **champion_examples** — Exemplos de copies campeãs de audiência
-
-### 2. New files
-
-- **`src/hooks/useEditorialLines.ts`** — Hook with CRUD operations (query, create, update, remove), following the same pattern as `useProducts.ts`
-- **`src/lib/validators.ts`** — Add `editorialLineSchema` with zod validation
-- **`src/pages/admin/EditorialLines.tsx`** — CRUD page with card list + dialog form, same pattern as Products page. Fields: Nome (Input, required), Objetivo (Textarea), Estilo do Conteúdo (Textarea), Exemplos de Copies Campeãs (Textarea with more rows)
-
-### 3. Routing and navigation
-
-- **`src/App.tsx`** — Add route `/admin/editorial-lines` pointing to the new page
-- **`src/components/AppShell.tsx`** — Add nav item `{ to: '/admin/editorial-lines', label: 'Linha Editorial', icon: FileText }` to `adminItems` array
+### 4. Generation hook — `src/hooks/useGenerateCopy.ts`
+- No changes needed (passes input body as-is)
 
