@@ -23,7 +23,7 @@ export default function Products() {
 
   const openNew = () => {
     setEditId(null);
-    reset({ name: '', description: '', benefits: '', features: '', objections: '', pricing_notes: '', links: '' });
+    reset({ name: '', description: '', benefits: '', features: '', objections: '', pain_points: '' });
     setDialogOpen(true);
   };
 
