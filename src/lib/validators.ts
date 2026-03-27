@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const generateCopySchema = z.object({
   product_id: z.string().uuid().optional(),
+  editorial_line_id: z.string().uuid().optional(),
   copywriter_ids: z.array(z.string().uuid()).min(0).max(2),
   channel: z.enum(['twitter', 'instagram', 'linkedin', 'email', 'whatsapp']),
   objective: z.enum(['awareness', 'engajamento', 'leads', 'conversao', 'vendas']),
