@@ -1,21 +1,15 @@
 
 
-## Plan: Add "Linha Editorial" field to Create page + quantity 5
+## Plan: Conditional 150-char limit for S size
 
-### 1. Schema & Validation — `src/lib/validators.ts`
-- Add `editorial_line_id: z.string().uuid().optional()` to `generateCopySchema`
-- Change quantity max from 3 to 5
+### Change: `supabase/functions/generate-copy/index.ts`
 
-### 2. Create Page — `src/pages/create/Index.tsx`
-- Import `useEditorialLines` hook
-- Add a Select field for "Linha Editorial" (optional, same pattern as Product select with "none" option)
-- Update quantity Select to include options 4 and 5
+Update the `sizeGuide` for "S" to be dynamic instead of static. After building the size guide object, add a conditional override:
 
-### 3. Edge Function — `supabase/functions/generate-copy/index.ts`
-- Update validation: accept quantity up to 5, accept optional `editorial_line_id`
-- If `editorial_line_id` provided, fetch the editorial line from DB (verify owner_id)
-- Inject editorial line context into the user prompt (name, objective, content_style, champion_examples)
+- Default S guide remains: `"Muito curto e conciso. Máximo 1-2 frases por campo."`
+- When `channel === "instagram"` AND `copy_type === "completa"` AND `format === "static"`, override S to: `"Muito curto e conciso. Máximo absoluto de 150 caracteres no total da copy (somando todos os campos preenchidos). Seja direto e impactante."`
 
-### 4. Generation hook — `src/hooks/useGenerateCopy.ts`
-- No changes needed (passes input body as-is)
+This is a single-line conditional added after the `sizeGuide` declaration — no other files need changes.
+
+Redeploy the `generate-copy` edge function.
 
