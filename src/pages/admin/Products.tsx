@@ -35,8 +35,7 @@ export default function Products() {
       benefits: p.benefits ?? '',
       features: p.features ?? '',
       objections: p.objections ?? '',
-      pricing_notes: p.pricing_notes ?? '',
-      links: p.links ?? '',
+      pain_points: p.pain_points ?? '',
     });
     setDialogOpen(true);
   };
