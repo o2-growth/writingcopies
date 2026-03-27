@@ -146,7 +146,9 @@ serve(async (req) => {
     };
 
     const sizeGuide: Record<string, string> = {
-      S: "Muito curto e conciso. Máximo 1-2 frases por campo.",
+      S: (body.channel === "instagram" && body.copy_type === "completa" && body.format === "static")
+        ? "Muito curto e conciso. Máximo absoluto de 150 caracteres no total da copy (somando todos os campos preenchidos). Seja direto e impactante."
+        : "Muito curto e conciso. Máximo 1-2 frases por campo.",
       M: "Tamanho médio. 2-4 frases por campo.",
       L: "Longo e detalhado. 4-6 frases por campo.",
       XL: "Extra longo. 6+ frases, desenvolvimento completo.",
