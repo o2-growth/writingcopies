@@ -19,7 +19,8 @@ function validateBody(body: any) {
   if (!objectives.includes(body.objective)) errors.push("objective inválido");
   if (!copyTypes.includes(body.copy_type)) errors.push("copy_type inválido");
   if (!sizes.includes(body.size)) errors.push("size inválido");
-  if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 3) errors.push("quantity: 1-3");
+  if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
+  if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
 
   return errors;
