@@ -19,7 +19,8 @@ import {
   ChevronRight,
   Sun,
   Moon,
-  BarChart3 } from
+  BarChart3,
+  FileText } from
 'lucide-react';
 
 const navItems = [
@@ -32,7 +33,8 @@ const navItems = [
 const adminItems = [
 { to: '/admin/company', label: 'Empresa', icon: Building2 },
 { to: '/admin/products', label: 'Produtos', icon: Package },
-{ to: '/admin/copywriters', label: 'Copywriters', icon: Users }];
+{ to: '/admin/copywriters', label: 'Copywriters', icon: Users },
+{ to: '/admin/editorial-lines', label: 'Linha Editorial', icon: FileText }];
 
 
 const SIDEBAR_KEY = 'sidebar_collapsed';

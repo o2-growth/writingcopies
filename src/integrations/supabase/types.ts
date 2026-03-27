@@ -308,6 +308,39 @@ export type Database = {
         }
         Relationships: []
       }
+      editorial_lines: {
+        Row: {
+          champion_examples: string | null
+          content_style: string | null
+          created_at: string | null
+          id: string
+          name: string
+          objective: string | null
+          owner_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          champion_examples?: string | null
+          content_style?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          objective?: string | null
+          owner_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          champion_examples?: string | null
+          content_style?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          objective?: string | null
+          owner_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       generations: {
         Row: {
           channel: string
