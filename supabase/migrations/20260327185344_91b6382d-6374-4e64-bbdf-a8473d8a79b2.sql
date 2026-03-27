@@ -1,0 +1,1 @@
+ALTER TABLE public.products DROP COLUMN pricing_notes, DROP COLUMN links, ADD COLUMN pain_points text;

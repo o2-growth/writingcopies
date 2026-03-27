@@ -421,11 +421,10 @@ export type Database = {
           description: string | null
           features: string | null
           id: string
-          links: string | null
           name: string
           objections: string | null
           owner_id: string
-          pricing_notes: string | null
+          pain_points: string | null
           updated_at: string | null
         }
         Insert: {
@@ -434,11 +433,10 @@ export type Database = {
           description?: string | null
           features?: string | null
           id?: string
-          links?: string | null
           name: string
           objections?: string | null
           owner_id: string
-          pricing_notes?: string | null
+          pain_points?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -447,11 +445,10 @@ export type Database = {
           description?: string | null
           features?: string | null
           id?: string
-          links?: string | null
           name?: string
           objections?: string | null
           owner_id?: string
-          pricing_notes?: string | null
+          pain_points?: string | null
           updated_at?: string | null
         }
         Relationships: []

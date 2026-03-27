@@ -193,7 +193,7 @@ ${product.description ? `Descrição: ${product.description}` : ""}
 ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
-${product.pricing_notes ? `Pricing: ${product.pricing_notes}` : ""}` : ""}
+${product.pain_points ? `Dores que resolve: ${product.pain_points}` : ""}` : ""}
 
 ${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
 ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
