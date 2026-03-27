@@ -19,7 +19,8 @@ import {
   ChevronRight,
   Sun,
   Moon,
-  BarChart3 } from
+  BarChart3,
+  FileText } from
 'lucide-react';
 
 const navItems = [
