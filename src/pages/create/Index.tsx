@@ -25,6 +25,7 @@ export default function CreatePage() {
   const { products } = useProducts();
   const { activeCopywriters } = useCopywriters();
   const { company } = useCompany();
+  const { editorialLines } = useEditorialLines();
   const generate = useGenerateCopy();
   const { approve } = useApprovedCopies();
 
