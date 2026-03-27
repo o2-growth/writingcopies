@@ -14,6 +14,7 @@ import HistoryPage from "./pages/history/Index";
 import CompanyPage from "./pages/admin/Company";
 import ProductsPage from "./pages/admin/Products";
 import CopywritersPage from "./pages/admin/Copywriters";
+import EditorialLinesPage from "./pages/admin/EditorialLines";
 import NotFound from "./pages/NotFound";
 import ControlePage from "./pages/controle/Index";
 import { Loader2 } from "lucide-react";
