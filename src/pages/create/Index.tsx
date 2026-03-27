@@ -6,6 +6,7 @@ import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS, FORMATS } from '@/lib/constant
 import { useProducts } from '@/hooks/useProducts';
 import { useCopywriters } from '@/hooks/useCopywriters';
 import { useCompany } from '@/hooks/useCompany';
+import { useEditorialLines } from '@/hooks/useEditorialLines';
 import { useGenerateCopy } from '@/hooks/useGenerateCopy';
 import { useApprovedCopies } from '@/hooks/useApprovedCopies';
 import CopyResultCard from '@/components/CopyResultCard';
@@ -24,6 +25,7 @@ export default function CreatePage() {
   const { products } = useProducts();
   const { activeCopywriters } = useCopywriters();
   const { company } = useCompany();
+  const { editorialLines } = useEditorialLines();
   const generate = useGenerateCopy();
   const { approve } = useApprovedCopies();
 
@@ -141,6 +143,23 @@ export default function CreatePage() {
           </div>
 
           <div className="space-y-2">
+            <Label>Linha Editorial</Label>
+            <Controller
+              name="editorial_line_id"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar linha editorial" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sem linha editorial</SelectItem>
+                    {editorialLines.map(el => <SelectItem key={el.id} value={el.id}>{el.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          <div className="space-y-2">
             <Label>Canal</Label>
             <Controller
               name="channel"
@@ -216,6 +235,8 @@ export default function CreatePage() {
                     <SelectItem value="1">1 copy</SelectItem>
                     <SelectItem value="2">2 copies</SelectItem>
                     <SelectItem value="3">3 copies</SelectItem>
+                    <SelectItem value="4">4 copies</SelectItem>
+                    <SelectItem value="5">5 copies</SelectItem>
                   </SelectContent>
                 </Select>
               )}

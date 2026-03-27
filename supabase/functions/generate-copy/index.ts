@@ -19,7 +19,8 @@ function validateBody(body: any) {
   if (!objectives.includes(body.objective)) errors.push("objective inválido");
   if (!copyTypes.includes(body.copy_type)) errors.push("copy_type inválido");
   if (!sizes.includes(body.size)) errors.push("size inválido");
-  if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 3) errors.push("quantity: 1-3");
+  if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
+  if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
 
   return errors;
@@ -75,6 +76,18 @@ serve(async (req) => {
         .eq("owner_id", user.id)
         .single();
       product = p;
+    }
+
+    // Load editorial line if specified
+    let editorialLine = null;
+    if (body.editorial_line_id) {
+      const { data: el } = await supabase
+        .from("editorial_lines")
+        .select("*")
+        .eq("id", body.editorial_line_id)
+        .eq("owner_id", user.id)
+        .single();
+      editorialLine = el;
     }
 
     // Load copywriters
@@ -179,6 +192,11 @@ ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
 ${product.pricing_notes ? `Pricing: ${product.pricing_notes}` : ""}` : ""}
+
+${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
+${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
+${editorialLine.content_style ? `Estilo do conteúdo: ${editorialLine.content_style}` : ""}
+${editorialLine.champion_examples ? `Exemplos de copies campeãs:\n${editorialLine.champion_examples}` : ""}` : ""}
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}

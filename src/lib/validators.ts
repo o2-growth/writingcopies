@@ -2,13 +2,14 @@ import { z } from 'zod';
 
 export const generateCopySchema = z.object({
   product_id: z.string().uuid().optional(),
+  editorial_line_id: z.string().uuid().optional(),
   copywriter_ids: z.array(z.string().uuid()).min(0).max(2),
   channel: z.enum(['twitter', 'instagram', 'linkedin', 'email', 'whatsapp']),
   objective: z.enum(['awareness', 'engajamento', 'leads', 'conversao', 'vendas']),
   copy_type: z.enum(['titulo', 'subtitulo', 'corpo', 'cta', 'completa']),
   size: z.enum(['S', 'M', 'L', 'XL']),
   format: z.enum(['video', 'static']).optional(),
-  quantity: z.number().int().min(1).max(3),
+  quantity: z.number().int().min(1).max(5),
   extra_context: z.string().max(2000).optional(),
 });
 
