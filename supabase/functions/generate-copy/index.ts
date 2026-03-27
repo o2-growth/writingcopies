@@ -78,6 +78,18 @@ serve(async (req) => {
       product = p;
     }
 
+    // Load editorial line if specified
+    let editorialLine = null;
+    if (body.editorial_line_id) {
+      const { data: el } = await supabase
+        .from("editorial_lines")
+        .select("*")
+        .eq("id", body.editorial_line_id)
+        .eq("owner_id", user.id)
+        .single();
+      editorialLine = el;
+    }
+
     // Load copywriters
     const copywriterIds: string[] = body.copywriter_ids ?? [];
     let copywriterA: any = null;
