@@ -117,6 +117,11 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
               <p className="text-foreground whitespace-pre-wrap">{slide.text}</p>
             </div>
           ))
+        ) : isVideo ? (
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase">Roteiro</p>
+            <p className="text-foreground whitespace-pre-wrap">{copy.script}</p>
+          </div>
         ) : (
           <>
             {copy.title && (

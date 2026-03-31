@@ -357,11 +357,11 @@ ${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editor
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
-${isCarousel ? `**Formato:** Carrossel` : `**Tipo:** ${body.copy_type}
+${isCarousel ? `**Formato:** Carrossel` : isVideo ? `**Formato:** Vídeo\n**Tamanho:** ${body.size} — ${sizeGuide[body.size]}` : `**Tipo:** ${body.copy_type}
 **Tamanho:** ${body.size} — ${sizeGuide[body.size]}`}
 **Quantidade:** ${body.quantity}
 
-${isCarousel ? 'Siga as regras de carrossel definidas no system prompt.' : copyTypeInstructions[body.copy_type]}
+${isCarousel ? 'Siga as regras de carrossel definidas no system prompt.' : isVideo ? 'Siga as regras de roteiro de vídeo definidas no system prompt.' : copyTypeInstructions[body.copy_type]}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 
