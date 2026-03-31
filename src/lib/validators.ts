@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
+export const profileEnum = z.enum(['company', 'ceo']);
+
 export const generateCopySchema = z.object({
+  profile: profileEnum,
   product_id: z.string().uuid().optional(),
   editorial_line_id: z.string().uuid().optional(),
   copywriter_ids: z.array(z.string().uuid()).min(0).max(2),
