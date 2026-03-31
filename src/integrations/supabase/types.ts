@@ -426,6 +426,7 @@ export type Database = {
       products: {
         Row: {
           benefits: string | null
+          best_ads: string | null
           created_at: string | null
           description: string | null
           features: string | null
@@ -438,6 +439,7 @@ export type Database = {
         }
         Insert: {
           benefits?: string | null
+          best_ads?: string | null
           created_at?: string | null
           description?: string | null
           features?: string | null
@@ -450,6 +452,7 @@ export type Database = {
         }
         Update: {
           benefits?: string | null
+          best_ads?: string | null
           created_at?: string | null
           description?: string | null
           features?: string | null
