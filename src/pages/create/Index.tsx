@@ -265,7 +265,7 @@ export default function CreatePage() {
                   <SelectTrigger><SelectValue placeholder="Selecionar formato" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Não definir</SelectItem>
-                    {FORMATS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                    {availableFormats.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}
