@@ -302,7 +302,8 @@ ${product.description ? `Descrição: ${product.description}` : ""}
 ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
-${product.pain_points ? `Dores que resolve: ${product.pain_points}` : ""}` : ""}
+${product.pain_points ? `Dores que resolve: ${product.pain_points}` : ""}
+${product.best_ads && ['conversao', 'leads', 'vendas'].includes(body.objective) ? `**Melhores anúncios de referência (inspiração):**\n${product.best_ads}` : ""}` : ""}
 
 ${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
 ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
