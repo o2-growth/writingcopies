@@ -36,6 +36,7 @@ export default function Products() {
       features: p.features ?? '',
       objections: p.objections ?? '',
       pain_points: p.pain_points ?? '',
+      best_ads: p.best_ads ?? '',
     });
     setDialogOpen(true);
   };
