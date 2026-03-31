@@ -329,6 +329,7 @@ ${stylePackB ? `${stylePackB}\n` : ""}
 ${blendInstructions}
 ${engagementRules}
 ${carouselRules}
+${videoRules}
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
