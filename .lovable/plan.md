@@ -1,73 +1,43 @@
 
 
-## Plan: Structured champion examples for Products and Editorial Lines
+## Plan: Adapt video format output — script/scene directions instead of title/subtitle
 
 ### Problem
-Currently, "Melhores Anúncios" (Products) and "Exemplos de Copies Campeãs" (Editorial Lines) are single text fields. Each example needs to be an individual entry tagged with **format** (vídeo, estático, carrossel) and **channel** (twitter, instagram, linkedin, email, whatsapp).
+When format is "video", the AI generates title/subtitle/body/cta structure, but video copies only need **spoken text (roteiro)** or **scene directions**. Title and subtitle don't apply.
 
 ### Approach
-Create a new `champion_examples` table to store individual examples linked to either a product or an editorial line. Remove the old text fields (`best_ads` from products, `champion_examples` from editorial_lines`).
+Add a third output format branch in the edge function (alongside standard and carousel) for video. Update the result card to render video copies differently.
 
-### 1. Database migration
-- Create table `champion_examples`:
-  - `id` uuid PK
-  - `owner_id` uuid (for RLS)
-  - `product_id` uuid nullable (FK to products)
-  - `editorial_line_id` uuid nullable (FK to editorial_lines)
-  - `body` text not null (the copy text)
-  - `format` text not null (video, static, carousel)
-  - `channel` text not null (twitter, instagram, linkedin, email, whatsapp)
-  - `created_at` timestamptz default now()
-  - CHECK: exactly one of product_id or editorial_line_id is set
-- RLS: owner-based CRUD policies
-- Drop columns `products.best_ads` and `editorial_lines.champion_examples`
+### 1. Edge function — `supabase/functions/generate-copy/index.ts`
 
-### 2. Validators — `src/lib/validators.ts`
-- Remove `best_ads` from `productSchema`
-- Remove `champion_examples` from `editorialLineSchema`
-- Add `championExampleSchema` with body, format, channel fields
+Add a `isVideo = body.format === 'video'` check. When video:
 
-### 3. New hook — `src/hooks/useChampionExamples.ts`
-- CRUD hook that accepts `{ product_id?: string, editorial_line_id?: string }` filter
-- Queries `champion_examples` table filtered by the parent entity
+- **Output JSON format**: `{ "copies": [{ "script": "..." }] }` — single field for the spoken text / scene directions
+- **Prompt rules**: New `videoRules` block injected into system prompt:
+  - "Gere um roteiro de vídeo. Não inclua título ou subtítulo."
+  - "O campo `script` deve conter o texto falado e/ou direções de cena."
+  - "Use marcações como [CENA], [NARRAÇÃO], [TEXTO NA TELA] para organizar."
+  - Respect the `size` guide for length
+- **Override** `copyTypeInstructions` — ignore copy_type for video (like carousel does)
 
-### 4. UI component — `src/components/ChampionExamplesEditor.tsx`
-- Reusable component used in both Products and Editorial Lines dialogs
-- Shows list of existing examples (each with body preview, format badge, channel badge, delete button)
-- "Add example" button opens inline form with: Textarea (body), Select (format), Select (channel)
-- Saves immediately to DB (not part of parent form submit)
+### 2. Result card — `src/components/CopyResultCard.tsx`
 
-### 5. Products admin — `src/pages/admin/Products.tsx`
-- Remove `best_ads` Textarea field
-- Add `ChampionExamplesEditor` component inside the dialog, passing `product_id` when editing
+- Add `isVideo` detection: `copy.script && typeof copy.script === 'string'`
+- Render video copies as a single block with label "Roteiro" instead of title/subtitle/body/cta
+- Update `fullText` for copy-to-clipboard to use `copy.script`
+- Update the `CopyResult` interface to include `script?: string`
 
-### 6. Editorial Lines admin — `src/pages/admin/EditorialLines.tsx`
-- Remove `champion_examples` Textarea field
-- Add `ChampionExamplesEditor` component inside the dialog, passing `editorial_line_id` when editing
+### 3. Create page — `src/pages/create/Index.tsx`
 
-### 7. Create page — `src/pages/create/Index.tsx`
-- Update `use_best_ads` checkbox logic: instead of checking `product.best_ads`, check if the selected product has any champion examples in the DB
-- Pass relevant info to the edge function
+- When format is "video", hide or disable the "Tipo" (copy_type) selector since it doesn't apply (like carousel behavior)
+- Update `handleSaveApproved` to handle video copies (use `script` as body)
 
-### 8. Edge function — `supabase/functions/generate-copy/index.ts`
-- When `use_best_ads` is true and a product is selected: query `champion_examples` where `product_id = body.product_id`, optionally filtered by `channel` and `format` matching the current request
-- When an editorial line is selected: query `champion_examples` where `editorial_line_id = body.editorial_line_id`
-- Inject each example into the prompt with its format and channel metadata:
-  ```
-  **Exemplos de referência:**
-  1. [Canal: Instagram | Formato: Carrossel] "texto da copy..."
-  2. [Canal: LinkedIn | Formato: Estático] "texto da copy..."
-  ```
+### 4. Approve flow
+
+- When approving a video copy, store `copy.script` as the `body` field in approved_copies
 
 ### Files affected
-1. Database migration (new table + drop old columns)
-2. `src/lib/validators.ts`
-3. `src/hooks/useChampionExamples.ts` (new)
-4. `src/components/ChampionExamplesEditor.tsx` (new)
-5. `src/pages/admin/Products.tsx`
-6. `src/pages/admin/EditorialLines.tsx`
-7. `src/hooks/useProducts.ts` (remove best_ads references)
-8. `src/pages/create/Index.tsx`
-9. `supabase/functions/generate-copy/index.ts`
-10. Redeploy edge function
+1. `supabase/functions/generate-copy/index.ts` — video prompt rules + output format
+2. `src/components/CopyResultCard.tsx` — video rendering
+3. `src/pages/create/Index.tsx` — hide copy_type for video, handle approve
 
