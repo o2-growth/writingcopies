@@ -11,21 +11,22 @@ import { useGenerateCopy } from '@/hooks/useGenerateCopy';
 import { useApprovedCopies } from '@/hooks/useApprovedCopies';
 import CopyResultCard from '@/components/CopyResultCard';
 import ApprovedCopyModal from '@/components/ApprovedCopyModal';
+import ProfileToggle from '@/components/ProfileToggle';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { AlertCircle, Sparkles, Loader2 } from 'lucide-react';
 
 export default function CreatePage() {
+  const [profile, setProfile] = useState<'company' | 'ceo'>('company');
   const { products } = useProducts();
-  const { activeCopywriters } = useCopywriters();
-  const { company } = useCompany();
-  const { editorialLines } = useEditorialLines();
+  const { activeCopywriters } = useCopywriters(profile);
+  const { company } = useCompany(profile);
+  const { editorialLines } = useEditorialLines(profile);
   const generate = useGenerateCopy();
   const { approve } = useApprovedCopies();
 
@@ -37,6 +38,7 @@ export default function CreatePage() {
   const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<GenerateCopyInput>({
     resolver: zodResolver(generateCopySchema),
     defaultValues: {
+      profile: 'company',
       copywriter_ids: [],
       quantity: 1,
       copy_type: 'completa',
@@ -60,6 +62,13 @@ export default function CreatePage() {
   if (selectedFormat === 'carousel' && selectedChannel !== 'instagram' && selectedChannel !== 'linkedin') {
     setValue('format', undefined);
   }
+
+  const handleProfileChange = (newProfile: 'company' | 'ceo') => {
+    setProfile(newProfile);
+    setValue('profile', newProfile);
+    setValue('editorial_line_id', undefined);
+    setValue('copywriter_ids', []);
+  };
 
   const toggleCopywriter = (id: string) => {
     const current = selectedCopywriters;
@@ -150,12 +159,13 @@ export default function CreatePage() {
 
   if (!company) {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto space-y-6">
+        <ProfileToggle value={profile} onChange={handleProfileChange} />
         <Card>
           <CardContent className="py-12 text-center space-y-4">
             <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto" />
-            <h2 className="text-xl font-semibold">Configure sua empresa primeiro</h2>
-            <p className="text-muted-foreground">Antes de gerar copies, configure a voz da marca e dados da empresa.</p>
+            <h2 className="text-xl font-semibold">Configure o perfil {profile === 'company' ? 'da empresa' : 'do CEO'} primeiro</h2>
+            <p className="text-muted-foreground">Antes de gerar copies, configure a voz da marca e dados.</p>
             <Link to="/admin/company">
               <Button>Ir para Configurações</Button>
             </Link>
@@ -173,6 +183,12 @@ export default function CreatePage() {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Profile selector */}
+        <div className="space-y-2">
+          <Label className="text-base font-semibold">Perfil</Label>
+          <ProfileToggle value={profile} onChange={handleProfileChange} />
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Produto</Label>
