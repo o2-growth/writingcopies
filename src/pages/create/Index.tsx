@@ -32,6 +32,7 @@ export default function CreatePage() {
   const [results, setResults] = useState<any>(null);
   const [lastInput, setLastInput] = useState<GenerateCopyInput | null>(null);
   const [approveModal, setApproveModal] = useState<{ open: boolean; copy: any }>({ open: false, copy: null });
+  const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
 
   const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<GenerateCopyInput>({
     resolver: zodResolver(generateCopySchema),
