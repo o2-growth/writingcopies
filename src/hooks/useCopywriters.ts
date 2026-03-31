@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-export function useCopywriters() {
+export function useCopywriters(profile: 'company' | 'ceo' = 'company') {
   const qc = useQueryClient();
 
   const presetsQuery = useQuery({
@@ -18,14 +18,15 @@ export function useCopywriters() {
   });
 
   const prefsQuery = useQuery({
-    queryKey: ['copywriter_preferences'],
+    queryKey: ['copywriter_preferences', profile],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return [];
       const { data, error } = await supabase
         .from('copywriter_preferences')
         .select('*')
-        .eq('owner_id', user.id);
+        .eq('owner_id', user.id)
+        .eq('profile', profile);
       if (error) throw error;
       return data;
     },
@@ -45,7 +46,7 @@ export function useCopywriters() {
       if (missing.length > 0) {
         const { error } = await supabase
           .from('copywriter_preferences')
-          .insert(missing.map(c => ({ owner_id: user.id, copywriter_id: c.id, is_active: true })));
+          .insert(missing.map(c => ({ owner_id: user.id, copywriter_id: c.id, is_active: true, profile })));
         if (error) throw error;
       }
     },

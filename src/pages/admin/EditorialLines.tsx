@@ -9,11 +9,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import ProfileToggle from '@/components/ProfileToggle';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 
 export default function EditorialLines() {
-  const { editorialLines, isLoading, create, update, remove } = useEditorialLines();
+  const [profile, setProfile] = useState<'company' | 'ceo'>('company');
+  const { editorialLines, isLoading, create, update, remove } = useEditorialLines(profile);
   const [editId, setEditId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -23,13 +25,14 @@ export default function EditorialLines() {
 
   const openNew = () => {
     setEditId(null);
-    reset({ name: '', objective: '', content_style: '', champion_examples: '' });
+    reset({ profile, name: '', objective: '', content_style: '', champion_examples: '' });
     setDialogOpen(true);
   };
 
   const openEdit = (item: any) => {
     setEditId(item.id);
     reset({
+      profile: item.profile ?? profile,
       name: item.name,
       objective: item.objective ?? '',
       content_style: item.content_style ?? '',
@@ -72,8 +75,10 @@ export default function EditorialLines() {
         <Button onClick={openNew} className="gap-2"><Plus className="h-4 w-4" /> Nova Linha</Button>
       </div>
 
+      <ProfileToggle value={profile} onChange={setProfile} />
+
       {editorialLines.length === 0 ? (
-        <Card><CardContent className="py-12 text-center text-muted-foreground">Nenhuma linha editorial. Crie a primeira!</CardContent></Card>
+        <Card><CardContent className="py-12 text-center text-muted-foreground">Nenhuma linha editorial para este perfil. Crie a primeira!</CardContent></Card>
       ) : (
         <div className="space-y-3">
           {editorialLines.map(item => (

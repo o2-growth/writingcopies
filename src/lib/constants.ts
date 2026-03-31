@@ -40,3 +40,10 @@ export type Size = typeof SIZES[number]['value'];
 export type Objective = typeof OBJECTIVES[number]['value'];
 export type Channel = typeof CHANNELS[number]['value'];
 export type Format = typeof FORMATS[number]['value'];
+
+export const PROFILES = [
+  { value: 'company', label: 'O2 Inc.', description: 'Perfil institucional da empresa' },
+  { value: 'ceo', label: 'CEO', description: 'Perfil pessoal do CEO' },
+] as const;
+
+export type Profile = typeof PROFILES[number]['value'];

@@ -2,11 +2,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { CompanySettingsInput } from '@/lib/validators';
 
-export function useCompany() {
+export function useCompany(profile: 'company' | 'ceo' = 'company') {
   const qc = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['company_settings'],
+    queryKey: ['company_settings', profile],
     queryFn: async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -14,6 +14,7 @@ export function useCompany() {
         .from('company_settings')
         .select('*')
         .eq('owner_id', user.id)
+        .eq('profile', profile)
         .maybeSingle();
       if (error) throw error;
       return data;
@@ -26,7 +27,10 @@ export function useCompany() {
       if (!user) throw new Error('Not authenticated');
       const { data, error } = await (supabase
         .from('company_settings') as any)
-        .upsert({ ...input, owner_id: user.id, updated_at: new Date().toISOString() }, { onConflict: 'owner_id' })
+        .upsert(
+          { ...input, owner_id: user.id, updated_at: new Date().toISOString() },
+          { onConflict: 'owner_id,profile' }
+        )
         .select()
         .single();
       if (error) throw error;

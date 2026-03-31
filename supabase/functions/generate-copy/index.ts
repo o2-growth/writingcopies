@@ -11,6 +11,7 @@ function validateBody(body: any) {
   const objectives = ["awareness", "engajamento", "leads", "conversao", "vendas"];
   const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
   const sizes = ["S", "M", "L", "XL"];
+  const profiles = ["company", "ceo"];
   const formats = ["video", "static", "carousel"];
   const errors: string[] = [];
 
@@ -24,6 +25,7 @@ function validateBody(body: any) {
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
   if (body.format && !formats.includes(body.format)) errors.push("format inválido");
+  if (!body.profile || !profiles.includes(body.profile)) errors.push("profile inválido");
   if (body.format === "carousel" && !["instagram", "linkedin"].includes(body.channel)) errors.push("carousel só disponível para Instagram e LinkedIn");
 
   return errors;
@@ -64,6 +66,7 @@ serve(async (req) => {
       .from("company_settings")
       .select("*")
       .eq("owner_id", user.id)
+      .eq("profile", body.profile)
       .single();
     if (companyErr || !company) {
       return new Response(JSON.stringify({ error: "Configure sua empresa antes de gerar copies." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });

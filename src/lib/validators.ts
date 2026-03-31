@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
+export const profileEnum = z.enum(['company', 'ceo']);
+
 export const generateCopySchema = z.object({
+  profile: profileEnum,
   product_id: z.string().uuid().optional(),
   editorial_line_id: z.string().uuid().optional(),
   copywriter_ids: z.array(z.string().uuid()).min(0).max(2),
@@ -16,6 +19,7 @@ export const generateCopySchema = z.object({
 export type GenerateCopyInput = z.infer<typeof generateCopySchema>;
 
 export const companySettingsSchema = z.object({
+  profile: profileEnum,
   brand_name: z.string().min(1, 'Nome da marca obrigatório').max(200),
   brand_voice: z.string().min(1, 'Voz da marca obrigatória').max(5000),
   audience: z.string().max(2000).optional(),
@@ -41,6 +45,7 @@ export const productSchema = z.object({
 export type ProductInput = z.infer<typeof productSchema>;
 
 export const editorialLineSchema = z.object({
+  profile: profileEnum,
   name: z.string().min(1, 'Nome obrigatório').max(200),
   objective: z.string().max(5000).optional(),
   content_style: z.string().max(5000).optional(),

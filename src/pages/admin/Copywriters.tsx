@@ -9,21 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChevronDown, ChevronUp, BookOpen, Sparkles, CheckCircle2, XCircle, Quote } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-function StyleSection({ title, content, icon: Icon }: { title: string; content: string | null | undefined; icon: React.ElementType }) {
-  if (!content) return null;
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-        <Icon className="h-4 w-4 text-primary" />
-        {title}
-      </div>
-      <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap pl-6">{content}</p>
-    </div>
-  );
-}
+import { BookOpen, Sparkles, CheckCircle2, XCircle, Quote } from 'lucide-react';
+import ProfileToggle from '@/components/ProfileToggle';
 
 function CopywriterSheet({ cw, open, onClose }: { cw: any; open: boolean; onClose: () => void }) {
   const samplesQuery = useQuery({
@@ -60,7 +47,6 @@ function CopywriterSheet({ cw, open, onClose }: { cw: any; open: boolean; onClos
 
         <ScrollArea className="flex-1">
           <div className="px-6 py-5 space-y-6">
-            {/* Visão geral */}
             {cw.notes && (
               <div>
                 <p className="text-sm font-semibold mb-2">Sobre</p>
@@ -70,7 +56,6 @@ function CopywriterSheet({ cw, open, onClose }: { cw: any; open: boolean; onClos
 
             <Separator />
 
-            {/* Style guide */}
             <div className="space-y-4">
               <p className="text-sm font-semibold flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" /> Estilo de Escrita
@@ -80,7 +65,6 @@ function CopywriterSheet({ cw, open, onClose }: { cw: any; open: boolean; onClos
               </p>
             </div>
 
-            {/* Dos e Don'ts */}
             {(cw.dos || cw.donts) && (
               <>
                 <Separator />
@@ -105,7 +89,6 @@ function CopywriterSheet({ cw, open, onClose }: { cw: any; open: boolean; onClos
               </>
             )}
 
-            {/* Samples */}
             {samplesQuery.data && samplesQuery.data.length > 0 && (
               <>
                 <Separator />
@@ -143,14 +126,15 @@ function CopywriterSheet({ cw, open, onClose }: { cw: any; open: boolean; onClos
 }
 
 export default function CopywritersPage() {
-  const { copywriters, preferences, isLoading, ensurePreferences, toggleActive } = useCopywriters();
+  const [profile, setProfile] = useState<'company' | 'ceo'>('company');
+  const { copywriters, preferences, isLoading, ensurePreferences, toggleActive } = useCopywriters(profile);
   const [selectedCw, setSelectedCw] = useState<any>(null);
 
   useEffect(() => {
     if (copywriters.length > 0 && !isLoading) {
       ensurePreferences.mutate();
     }
-  }, [copywriters.length, isLoading]);
+  }, [copywriters.length, isLoading, profile]);
 
   if (isLoading) return <div className="text-muted-foreground">Carregando...</div>;
 
@@ -162,6 +146,8 @@ export default function CopywritersPage() {
           Ative estilos para geração. Clique em <strong>Ver estilo</strong> para conhecer cada copywriter.
         </p>
       </div>
+
+      <ProfileToggle value={profile} onChange={setProfile} />
 
       <div className="space-y-3">
         {copywriters.map(cw => {
