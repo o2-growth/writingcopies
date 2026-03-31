@@ -32,6 +32,7 @@ export default function CreatePage() {
   const [results, setResults] = useState<any>(null);
   const [lastInput, setLastInput] = useState<GenerateCopyInput | null>(null);
   const [approveModal, setApproveModal] = useState<{ open: boolean; copy: any }>({ open: false, copy: null });
+  const [regeneratingIndex, setRegeneratingIndex] = useState<number | null>(null);
 
   const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<GenerateCopyInput>({
     resolver: zodResolver(generateCopySchema),
@@ -83,6 +84,39 @@ export default function CreatePage() {
 
   const handleApprove = (copy: any) => {
     setApproveModal({ open: true, copy });
+  };
+
+  const handleReject = async (index: number, feedback: string) => {
+    if (!lastInput) return;
+    setRegeneratingIndex(index);
+    try {
+      const originalCopy = results.copies[index];
+      const isCarousel = Array.isArray(originalCopy.slides) && originalCopy.slides.length > 0;
+      const originalText = isCarousel
+        ? originalCopy.slides.map((s: any) => `Slide ${s.slide_number}: ${s.text}`).join('\n')
+        : [originalCopy.title, originalCopy.subtitle, originalCopy.body, originalCopy.cta].filter(Boolean).join('\n');
+
+      const rewriteContext = `REESCRITA SOLICITADA. A copy anterior foi reprovada. Segue a copy original:\n---\n${originalText}\n---\nMotivo da reprovação / instruções de reescrita:\n${feedback}\n\nGere uma nova versão corrigida seguindo essas instruções.`;
+
+      const result = await generate.mutateAsync({
+        ...lastInput,
+        quantity: 1,
+        extra_context: rewriteContext,
+      });
+
+      if (result?.copies?.[0]) {
+        setResults((prev: any) => {
+          const updated = { ...prev, copies: [...prev.copies] };
+          updated.copies[index] = result.copies[0];
+          return updated;
+        });
+        toast.success('Copy reescrita com sucesso!');
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao reescrever');
+    } finally {
+      setRegeneratingIndex(null);
+    }
   };
 
   const handleSaveApproved = async ({ tags, notes }: { tags: string[]; notes: string }) => {
@@ -315,7 +349,14 @@ export default function CreatePage() {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Resultados</h2>
           {results.copies.map((copy: any, i: number) => (
-            <CopyResultCard key={i} copy={copy} index={i} onApprove={handleApprove} />
+            <CopyResultCard
+              key={i}
+              copy={copy}
+              index={i}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              isRegenerating={regeneratingIndex === i}
+            />
           ))}
         </div>
       )}
