@@ -11,6 +11,7 @@ function validateBody(body: any) {
   const objectives = ["awareness", "engajamento", "leads", "conversao", "vendas"];
   const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
   const sizes = ["S", "M", "L", "XL"];
+  const formats = ["video", "static", "carousel"];
   const errors: string[] = [];
 
   if (body.product_id && typeof body.product_id !== "string") errors.push("product_id inválido");
