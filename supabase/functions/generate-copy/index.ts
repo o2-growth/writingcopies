@@ -327,7 +327,7 @@ ${productChampionExamples.length > 0 ? `**Copies campeãs de referência (inspir
 ${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
 ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
 ${editorialLine.content_style ? `Estilo do conteúdo: ${editorialLine.content_style}` : ""}
-${editorialLine.champion_examples ? `Exemplos de copies campeãs:\n${editorialLine.champion_examples}` : ""}` : ""}
+${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editorialChampionExamples.map((e: any, i: number) => `${i+1}. [Canal: ${e.channel} | Formato: ${e.format}] "${e.body.substring(0, 500)}"`).join('\n')}` : ""}` : ""}
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
