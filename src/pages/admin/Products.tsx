@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus } from 'lucide-react';
+import ChampionExamplesEditor from '@/components/ChampionExamplesEditor';
 
 export default function Products() {
   const { products, isLoading, create, update, remove } = useProducts();
