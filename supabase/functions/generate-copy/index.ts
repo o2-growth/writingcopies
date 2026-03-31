@@ -11,6 +11,7 @@ function validateBody(body: any) {
   const objectives = ["awareness", "engajamento", "leads", "conversao", "vendas"];
   const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
   const sizes = ["S", "M", "L", "XL"];
+  const profiles = ["company", "ceo"];
   const formats = ["video", "static", "carousel"];
   const errors: string[] = [];
 
