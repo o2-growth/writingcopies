@@ -16,6 +16,7 @@ interface CopyResult {
   body?: string;
   cta?: string;
   slides?: Slide[];
+  script?: string;
 }
 
 interface Props {
@@ -32,9 +33,12 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
   const [feedback, setFeedback] = useState('');
 
   const isCarousel = Array.isArray(copy.slides) && copy.slides.length > 0;
+  const isVideo = !isCarousel && typeof copy.script === 'string' && copy.script.length > 0;
 
   const fullText = isCarousel
     ? copy.slides!.map(s => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
+    : isVideo
+    ? copy.script!
     : [copy.title, copy.subtitle, copy.body, copy.cta].filter(Boolean).join('\n\n');
 
   const handleCopy = async () => {
@@ -61,7 +65,7 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">
-            {isCarousel ? `Carrossel #${index + 1}` : `Copy #${index + 1}`}
+            {isCarousel ? `Carrossel #${index + 1}` : isVideo ? `Roteiro #${index + 1}` : `Copy #${index + 1}`}
             {isRegenerating && <Loader2 className="inline ml-2 h-4 w-4 animate-spin" />}
           </CardTitle>
           <div className="flex gap-2">
@@ -113,6 +117,11 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
               <p className="text-foreground whitespace-pre-wrap">{slide.text}</p>
             </div>
           ))
+        ) : isVideo ? (
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase">Roteiro</p>
+            <p className="text-foreground whitespace-pre-wrap">{copy.script}</p>
+          </div>
         ) : (
           <>
             {copy.title && (

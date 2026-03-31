@@ -53,6 +53,7 @@ export default function CreatePage() {
   const selectedCopywriters = watch('copywriter_ids') ?? [];
   const selectedChannel = watch('channel');
   const selectedFormat = watch('format');
+  const isVideoFormat = selectedFormat === 'video';
   const selectedProductId = watch('product_id');
   const selectedObjective = watch('objective');
 
@@ -143,12 +144,15 @@ export default function CreatePage() {
     if (!lastInput || !approveModal.copy) return;
     try {
       const isCarousel = Array.isArray(approveModal.copy.slides) && approveModal.copy.slides.length > 0;
+      const isVideo = !isCarousel && typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
       const fullBody = isCarousel
         ? approveModal.copy.slides.map((s: any) => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
+        : isVideo
+        ? approveModal.copy.script
         : [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
           .filter(Boolean).join('\n\n');
       await approve.mutateAsync({
-        title: isCarousel ? 'Carrossel' : (approveModal.copy.title || null),
+        title: isCarousel ? 'Carrossel' : isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
         body: fullBody,
         channel: lastInput.channel,
         objective: lastInput.objective,
@@ -267,21 +271,23 @@ export default function CreatePage() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Tipo</Label>
-            <Controller
-              name="copy_type"
-              control={control}
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {COPY_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
+          {!isVideoFormat && (
+            <div className="space-y-2">
+              <Label>Tipo</Label>
+              <Controller
+                name="copy_type"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {COPY_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Tamanho</Label>
