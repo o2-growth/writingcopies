@@ -181,6 +181,7 @@ serve(async (req) => {
     const language = company.language || "pt-BR";
     const isEngagement = body.objective === "engajamento";
     const isCarousel = body.format === "carousel";
+    const isVideo = body.format === "video";
 
     const engagementRules = isEngagement ? `
 ## REGRAS DE ENGAJAMENTO PURO (OBRIGATÓRIO)
