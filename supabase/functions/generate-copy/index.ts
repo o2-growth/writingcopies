@@ -25,6 +25,7 @@ function validateBody(body: any) {
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
   if (body.format && !formats.includes(body.format)) errors.push("format inválido");
+  if (!body.profile || !profiles.includes(body.profile)) errors.push("profile inválido");
   if (body.format === "carousel" && !["instagram", "linkedin"].includes(body.channel)) errors.push("carousel só disponível para Instagram e LinkedIn");
 
   return errors;
