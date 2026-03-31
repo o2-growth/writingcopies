@@ -279,7 +279,7 @@ ${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide
     const systemPrompt = `Você é um copywriter profissional que gera copies de alta performance.
 Você DEVE responder EXCLUSIVAMENTE em JSON válido, sem markdown, sem texto antes ou depois.
 Idioma de saída: ${language}
-${product?.best_ads && ['conversao', 'leads', 'vendas'].includes(body.objective) ? '\nUse os melhores anúncios fornecidos como inspiração de estrutura, tom e abordagem — mas NÃO copie. Crie variações originais.' : ''}
+${product?.best_ads && body.use_best_ads ? '\nUse os melhores anúncios fornecidos como inspiração de estrutura, tom e abordagem — mas NÃO copie. Crie variações originais.' : ''}
 
 ${stylePackA ? `${stylePackA}\n` : ""}
 ${stylePackB ? `${stylePackB}\n` : ""}
@@ -304,7 +304,7 @@ ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
 ${product.pain_points ? `Dores que resolve: ${product.pain_points}` : ""}
-${product.best_ads && ['conversao', 'leads', 'vendas'].includes(body.objective) ? `**Melhores anúncios de referência (inspiração):**\n${product.best_ads}` : ""}` : ""}
+${product.best_ads && body.use_best_ads ? `**Melhores anúncios de referência (inspiração):**\n${product.best_ads}` : ""}` : ""}
 
 ${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
 ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}

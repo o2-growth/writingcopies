@@ -347,6 +347,18 @@ export default function CreatePage() {
           {errors.copywriter_ids && <p className="text-sm text-destructive">{errors.copywriter_ids.message}</p>}
         </div>
 
+        {watch('product_id') && watch('product_id') !== 'none' && ['conversao', 'leads', 'vendas'].includes(watch('objective')) && (
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="use_best_ads"
+              {...register('use_best_ads')}
+              className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
+            />
+            <Label htmlFor="use_best_ads" className="cursor-pointer">Usar melhores anúncios como referência</Label>
+          </div>
+        )}
+
         <div className="space-y-2">
           <Label>Contexto Extra (opcional)</Label>
           <Textarea {...register('extra_context')} rows={3} placeholder="Informações adicionais, promoções, dados..." />
