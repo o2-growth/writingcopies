@@ -37,7 +37,6 @@ export default function EditorialLines() {
       name: item.name,
       objective: item.objective ?? '',
       content_style: item.content_style ?? '',
-      champion_examples: item.champion_examples ?? '',
     });
     setDialogOpen(true);
   };
