@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { generateCopySchema, type GenerateCopyInput } from '@/lib/validators';
 import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS, FORMATS } from '@/lib/constants';
 import { useProducts } from '@/hooks/useProducts';
+import { useChampionExamples } from '@/hooks/useChampionExamples';
 import { useCopywriters } from '@/hooks/useCopywriters';
 import { useCompany } from '@/hooks/useCompany';
 import { useEditorialLines } from '@/hooks/useEditorialLines';
@@ -52,6 +53,16 @@ export default function CreatePage() {
   const selectedCopywriters = watch('copywriter_ids') ?? [];
   const selectedChannel = watch('channel');
   const selectedFormat = watch('format');
+  const selectedProductId = watch('product_id');
+  const selectedObjective = watch('objective');
+
+  const { examples: productChampionExamples } = useChampionExamples({
+    product_id: selectedProductId && selectedProductId !== 'none' ? selectedProductId : undefined,
+  });
+
+  const showBestAdsCheckbox = selectedProductId && selectedProductId !== 'none'
+    && ['conversao', 'leads', 'vendas'].includes(selectedObjective)
+    && productChampionExamples.length > 0;
 
   const availableFormats = FORMATS.filter(f => {
     if (f.value === 'carousel') return selectedChannel === 'instagram' || selectedChannel === 'linkedin';
@@ -347,7 +358,7 @@ export default function CreatePage() {
           {errors.copywriter_ids && <p className="text-sm text-destructive">{errors.copywriter_ids.message}</p>}
         </div>
 
-        {watch('product_id') && watch('product_id') !== 'none' && ['conversao', 'leads', 'vendas'].includes(watch('objective')) && (
+        {showBestAdsCheckbox && (
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -355,7 +366,7 @@ export default function CreatePage() {
               {...register('use_best_ads')}
               className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
             />
-            <Label htmlFor="use_best_ads" className="cursor-pointer">Usar melhores anúncios como referência</Label>
+            <Label htmlFor="use_best_ads" className="cursor-pointer">Usar copies campeãs como referência</Label>
           </div>
         )}
 

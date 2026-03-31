@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus } from 'lucide-react';
+import ChampionExamplesEditor from '@/components/ChampionExamplesEditor';
 
 export default function Products() {
   const { products, isLoading, create, update, remove } = useProducts();
@@ -23,7 +24,7 @@ export default function Products() {
 
   const openNew = () => {
     setEditId(null);
-    reset({ name: '', description: '', benefits: '', features: '', objections: '', pain_points: '', best_ads: '' });
+    reset({ name: '', description: '', benefits: '', features: '', objections: '', pain_points: '' });
     setDialogOpen(true);
   };
 
@@ -36,7 +37,6 @@ export default function Products() {
       features: p.features ?? '',
       objections: p.objections ?? '',
       pain_points: p.pain_points ?? '',
-      best_ads: p.best_ads ?? '',
     });
     setDialogOpen(true);
   };
@@ -112,7 +112,7 @@ export default function Products() {
             <div className="space-y-2"><Label>Features</Label><Textarea {...register('features')} rows={2} /></div>
             <div className="space-y-2"><Label>Objeções</Label><Textarea {...register('objections')} rows={2} /></div>
             <div className="space-y-2"><Label>Quais dores resolve</Label><Textarea {...register('pain_points')} rows={2} /></div>
-            <div className="space-y-2"><Label>Melhores Anúncios</Label><Textarea {...register('best_ads')} rows={4} placeholder="Cole aqui seus melhores anúncios de referência. Serão usados como inspiração quando o objetivo for conversão, leads ou vendas." /></div>
+            {editId && <ChampionExamplesEditor product_id={editId} />}
             <Button type="submit" disabled={create.isPending || update.isPending}>
               {editId ? 'Salvar' : 'Criar'}
             </Button>

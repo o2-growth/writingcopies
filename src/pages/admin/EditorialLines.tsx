@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import ProfileToggle from '@/components/ProfileToggle';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus } from 'lucide-react';
+import ChampionExamplesEditor from '@/components/ChampionExamplesEditor';
 
 export default function EditorialLines() {
   const [profile, setProfile] = useState<'company' | 'ceo'>('company');
@@ -25,7 +26,7 @@ export default function EditorialLines() {
 
   const openNew = () => {
     setEditId(null);
-    reset({ profile, name: '', objective: '', content_style: '', champion_examples: '' });
+    reset({ profile, name: '', objective: '', content_style: '' });
     setDialogOpen(true);
   };
 
@@ -36,7 +37,6 @@ export default function EditorialLines() {
       name: item.name,
       objective: item.objective ?? '',
       content_style: item.content_style ?? '',
-      champion_examples: item.champion_examples ?? '',
     });
     setDialogOpen(true);
   };
@@ -111,7 +111,7 @@ export default function EditorialLines() {
             </div>
             <div className="space-y-2"><Label>Objetivo</Label><Textarea {...register('objective')} rows={2} /></div>
             <div className="space-y-2"><Label>Estilo do Conteúdo</Label><Textarea {...register('content_style')} rows={3} /></div>
-            <div className="space-y-2"><Label>Exemplos de Copies Campeãs</Label><Textarea {...register('champion_examples')} rows={5} /></div>
+            {editId && <ChampionExamplesEditor editorial_line_id={editId} />}
             <Button type="submit" disabled={create.isPending || update.isPending}>
               {editId ? 'Salvar' : 'Criar'}
             </Button>

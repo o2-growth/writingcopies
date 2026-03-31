@@ -84,8 +84,19 @@ serve(async (req) => {
       product = p;
     }
 
+    // Load champion examples for product (when use_best_ads)
+    let productChampionExamples: any[] = [];
+    if (product && body.use_best_ads) {
+      const { data: pce } = await supabase
+        .from("champion_examples")
+        .select("body, format, channel")
+        .eq("product_id", body.product_id);
+      productChampionExamples = pce ?? [];
+    }
+
     // Load editorial line if specified
     let editorialLine = null;
+    let editorialChampionExamples: any[] = [];
     if (body.editorial_line_id) {
       const { data: el } = await supabase
         .from("editorial_lines")
@@ -94,6 +105,13 @@ serve(async (req) => {
         .eq("owner_id", user.id)
         .single();
       editorialLine = el;
+
+      // Load champion examples for editorial line
+      const { data: ece } = await supabase
+        .from("champion_examples")
+        .select("body, format, channel")
+        .eq("editorial_line_id", body.editorial_line_id);
+      editorialChampionExamples = ece ?? [];
     }
 
     // Load copywriters
@@ -279,7 +297,7 @@ ${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide
     const systemPrompt = `Você é um copywriter profissional que gera copies de alta performance.
 Você DEVE responder EXCLUSIVAMENTE em JSON válido, sem markdown, sem texto antes ou depois.
 Idioma de saída: ${language}
-${product?.best_ads && body.use_best_ads ? '\nUse os melhores anúncios fornecidos como inspiração de estrutura, tom e abordagem — mas NÃO copie. Crie variações originais.' : ''}
+${productChampionExamples.length > 0 ? '\nUse os exemplos de copies campeãs fornecidos como inspiração de estrutura, tom e abordagem — mas NÃO copie. Crie variações originais.' : ''}
 
 ${stylePackA ? `${stylePackA}\n` : ""}
 ${stylePackB ? `${stylePackB}\n` : ""}
@@ -304,12 +322,12 @@ ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
 ${product.pain_points ? `Dores que resolve: ${product.pain_points}` : ""}
-${product.best_ads && body.use_best_ads ? `**Melhores anúncios de referência (inspiração):**\n${product.best_ads}` : ""}` : ""}
+${productChampionExamples.length > 0 ? `**Copies campeãs de referência (inspiração):**\n${productChampionExamples.map((e: any, i: number) => `${i+1}. [Canal: ${e.channel} | Formato: ${e.format}] "${e.body.substring(0, 500)}"`).join('\n')}` : ''}` : ""}
 
 ${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
 ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
 ${editorialLine.content_style ? `Estilo do conteúdo: ${editorialLine.content_style}` : ""}
-${editorialLine.champion_examples ? `Exemplos de copies campeãs:\n${editorialLine.champion_examples}` : ""}` : ""}
+${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editorialChampionExamples.map((e: any, i: number) => `${i+1}. [Canal: ${e.channel} | Formato: ${e.format}] "${e.body.substring(0, 500)}"`).join('\n')}` : ""}` : ""}
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
