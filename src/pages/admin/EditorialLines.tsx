@@ -111,7 +111,7 @@ export default function EditorialLines() {
             </div>
             <div className="space-y-2"><Label>Objetivo</Label><Textarea {...register('objective')} rows={2} /></div>
             <div className="space-y-2"><Label>Estilo do Conteúdo</Label><Textarea {...register('content_style')} rows={3} /></div>
-            <div className="space-y-2"><Label>Exemplos de Copies Campeãs</Label><Textarea {...register('champion_examples')} rows={5} /></div>
+            {editId && <ChampionExamplesEditor editorial_line_id={editId} />}
             <Button type="submit" disabled={create.isPending || update.isPending}>
               {editId ? 'Salvar' : 'Criar'}
             </Button>

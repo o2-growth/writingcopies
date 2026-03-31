@@ -50,7 +50,7 @@ export const editorialLineSchema = z.object({
   name: z.string().min(1, 'Nome obrigatório').max(200),
   objective: z.string().max(5000).optional(),
   content_style: z.string().max(5000).optional(),
-  champion_examples: z.string().max(10000).optional(),
+  
 });
 
 export type EditorialLineInput = z.infer<typeof editorialLineSchema>;

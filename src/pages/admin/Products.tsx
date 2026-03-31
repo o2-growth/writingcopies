@@ -112,7 +112,7 @@ export default function Products() {
             <div className="space-y-2"><Label>Features</Label><Textarea {...register('features')} rows={2} /></div>
             <div className="space-y-2"><Label>Objeções</Label><Textarea {...register('objections')} rows={2} /></div>
             <div className="space-y-2"><Label>Quais dores resolve</Label><Textarea {...register('pain_points')} rows={2} /></div>
-            <div className="space-y-2"><Label>Melhores Anúncios</Label><Textarea {...register('best_ads')} rows={4} placeholder="Cole aqui seus melhores anúncios de referência. Serão usados como inspiração quando o objetivo for conversão, leads ou vendas." /></div>
+            {editId && <ChampionExamplesEditor product_id={editId} />}
             <Button type="submit" disabled={create.isPending || update.isPending}>
               {editId ? 'Salvar' : 'Criar'}
             </Button>
