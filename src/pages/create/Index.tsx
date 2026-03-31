@@ -47,6 +47,18 @@ export default function CreatePage() {
   });
 
   const selectedCopywriters = watch('copywriter_ids') ?? [];
+  const selectedChannel = watch('channel');
+  const selectedFormat = watch('format');
+
+  const availableFormats = FORMATS.filter(f => {
+    if (f.value === 'carousel') return selectedChannel === 'instagram' || selectedChannel === 'linkedin';
+    return true;
+  });
+
+  // Reset format if carousel was selected but channel changed to one that doesn't support it
+  if (selectedFormat === 'carousel' && selectedChannel !== 'instagram' && selectedChannel !== 'linkedin') {
+    setValue('format', undefined);
+  }
 
   const toggleCopywriter = (id: string) => {
     const current = selectedCopywriters;
@@ -76,10 +88,13 @@ export default function CreatePage() {
   const handleSaveApproved = async ({ tags, notes }: { tags: string[]; notes: string }) => {
     if (!lastInput || !approveModal.copy) return;
     try {
-      const fullBody = [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
-        .filter(Boolean).join('\n\n');
+      const isCarousel = Array.isArray(approveModal.copy.slides) && approveModal.copy.slides.length > 0;
+      const fullBody = isCarousel
+        ? approveModal.copy.slides.map((s: any) => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
+        : [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
+          .filter(Boolean).join('\n\n');
       await approve.mutateAsync({
-        title: approveModal.copy.title || null,
+        title: isCarousel ? 'Carrossel' : (approveModal.copy.title || null),
         body: fullBody,
         channel: lastInput.channel,
         objective: lastInput.objective,
@@ -253,7 +268,7 @@ export default function CreatePage() {
                   <SelectTrigger><SelectValue placeholder="Selecionar formato" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Não definir</SelectItem>
-                    {FORMATS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                    {availableFormats.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}

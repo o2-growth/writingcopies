@@ -11,6 +11,7 @@ function validateBody(body: any) {
   const objectives = ["awareness", "engajamento", "leads", "conversao", "vendas"];
   const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
   const sizes = ["S", "M", "L", "XL"];
+  const formats = ["video", "static", "carousel"];
   const errors: string[] = [];
 
   if (body.product_id && typeof body.product_id !== "string") errors.push("product_id inválido");
@@ -22,6 +23,8 @@ function validateBody(body: any) {
   if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
+  if (body.format && !formats.includes(body.format)) errors.push("format inválido");
+  if (body.format === "carousel" && !["instagram", "linkedin"].includes(body.channel)) errors.push("carousel só disponível para Instagram e LinkedIn");
 
   return errors;
 }
@@ -156,6 +159,7 @@ serve(async (req) => {
 
     const language = company.language || "pt-BR";
     const isEngagement = body.objective === "engajamento";
+    const isCarousel = body.format === "carousel";
 
     const engagementRules = isEngagement ? `
 ## REGRAS DE ENGAJAMENTO PURO (OBRIGATÓRIO)
@@ -182,17 +186,80 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 - Educativo, inspirador ou provocativo — sem agenda de venda
 ` : "";
 
-    const systemPrompt = `Você é um copywriter profissional que gera copies de alta performance.
-Você DEVE responder EXCLUSIVAMENTE em JSON válido, sem markdown, sem texto antes ou depois.
-Idioma de saída: ${language}
+    const carouselRules = isCarousel ? `
+## FORMATO: CARROSSEL (OBRIGATÓRIO)
 
-${stylePackA ? `${stylePackA}\n` : ""}
-${stylePackB ? `${stylePackB}\n` : ""}
-${blendInstructions}
-${engagementRules}
+Você vai criar o texto para um carrossel de slides. Cada slide será desenhado separadamente (o design não é sua responsabilidade). Sua entrega é exclusivamente o TEXTO de cada slide.
 
-## Formato de saída OBRIGATÓRIO:
-{
+### REGRAS GERAIS
+- Quantidade de slides: Mínimo 6, Máximo 15, Ideal 8-12
+- Cada slide deve conter UMA ideia principal — nunca misture duas ideias no mesmo slide
+- Máximo de 45 palavras por slide
+- Parágrafos curtos: máximo 3 linhas por bloco de texto dentro do slide
+- Se um parágrafo ficou longo, quebre em dois slides
+
+### Técnicas de retenção entre slides
+- Use CLIFFHANGER: a última frase de um slide deve criar tensão ou curiosidade para o próximo
+  - BOM: Slide termina com "A Blockbuster riu da ideia — e recusou." → o leitor precisa passar para saber o que aconteceu
+  - RUIM: Slide termina com "E foi assim que a Netflix começou sua jornada de sucesso." → não há tensão
+- Use CONTRASTE entre slides: um slide apresenta o problema, o próximo apresenta o oposto
+- Use PAUSAS NARRATIVAS: slides curtos de 1-2 frases entre slides mais densos criam ritmo
+
+### O que NUNCA fazer
+- Não numere listas dentro dos slides (ex: "1. Primeiro ponto 2. Segundo ponto") — use slides separados para cada item
+- Não use bullet points — o design resolve isso visualmente, o texto deve ser fluido
+- Não repita a mesma informação em slides diferentes com palavras diferentes
+- Não coloque título + subtítulo + corpo no mesmo slide — escolha um foco
+
+### SLIDE 1 — CAPA
+- Máximo 15 palavras
+- Deve funcionar SOZINHO, sem contexto
+- Deve gerar reação imediata: curiosidade, surpresa, identificação ou discordância
+- NÃO use: logo, slogan, nome da empresa, hashtags, "swipe para ver" ou qualquer instrução
+- NÃO faça perguntas genéricas ("Você sabia que...?", "Quer saber como...?")
+- Fórmulas que funcionam: Afirmação surpreendente, Contraste dramático, Resultado antes da história, Dado de impacto, Provocação
+
+### SLIDE FINAL — ENCERRAMENTO
+${body.channel === "instagram" ? "- Reflexão genuína + pode incluir \"Salva esse post\" ou pergunta para comentários. SEM menção à empresa ou CTA comercial." : ""}
+${body.channel === "linkedin" ? "- Reflexão + pergunta aberta que convide ao debate nos comentários. Tom mais analítico. SEM menção à empresa ou CTA comercial." : ""}
+
+### ADAPTAÇÕES POR CANAL
+${body.channel === "instagram" ? `- Texto mais curto por slide (30-40 palavras ideal)
+- Linguagem mais visual e direta, ritmo rápido
+- Pode usar linguagem mais informal e coloquial
+- Emojis: use com moderação (máximo 1-2 por slide, e só se fizer sentido)
+- Hashtags: NÃO coloque nos slides` : ""}
+${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide (35-50 palavras)
+- Linguagem mais analítica e profissional
+- Pode incluir dados, referências e análises mais densas
+- Tom de artigo/editorial, não de post casual
+- NÃO use emojis nos slides
+- NÃO use hashtags nos slides` : ""}
+
+### IMPORTANTE: Ignore os campos copy_type e size para carrossel. Siga apenas as regras de slides acima.
+` : "";
+
+    // Determine output format based on carousel
+    const outputFormat = isCarousel
+      ? `{
+  "copies": [
+    {
+      "slides": [
+        {"slide_number": 1, "text": "..."},
+        {"slide_number": 2, "text": "..."}
+      ]
+    }
+  ],
+  "meta": {
+    "channel": "${body.channel}",
+    "objective": "${body.objective}",
+    "copy_type": "${body.copy_type}",
+    "size": "${body.size}",
+    "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
+    "language": "${language}"
+  }
+}`
+      : `{
   "copies": [
     {"title": "...", "subtitle": "...", "body": "...", "cta": "..."}
   ],
@@ -206,7 +273,19 @@ ${engagementRules}
   }
 }`;
 
-    const userPrompt = `Gere ${body.quantity} copy(ies) para:
+    const systemPrompt = `Você é um copywriter profissional que gera copies de alta performance.
+Você DEVE responder EXCLUSIVAMENTE em JSON válido, sem markdown, sem texto antes ou depois.
+Idioma de saída: ${language}
+
+${stylePackA ? `${stylePackA}\n` : ""}
+${stylePackB ? `${stylePackB}\n` : ""}
+${blendInstructions}
+${engagementRules}
+${carouselRules}
+
+## Formato de saída OBRIGATÓRIO:
+${outputFormat}`;
+    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : 'copy(ies)'} para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
@@ -229,11 +308,11 @@ ${editorialLine.champion_examples ? `Exemplos de copies campeãs:\n${editorialLi
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
-**Tipo:** ${body.copy_type}
-**Tamanho:** ${body.size} — ${sizeGuide[body.size]}
+${isCarousel ? `**Formato:** Carrossel` : `**Tipo:** ${body.copy_type}
+**Tamanho:** ${body.size} — ${sizeGuide[body.size]}`}
 **Quantidade:** ${body.quantity}
 
-${copyTypeInstructions[body.copy_type]}
+${isCarousel ? 'Siga as regras de carrossel definidas no system prompt.' : copyTypeInstructions[body.copy_type]}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 

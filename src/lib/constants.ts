@@ -32,6 +32,7 @@ export const CHANNELS = [
 export const FORMATS = [
   { value: 'video',  label: 'Vídeo' },
   { value: 'static', label: 'Estático' },
+  { value: 'carousel', label: 'Carrossel' },
 ] as const;
 
 export type CopyType = typeof COPY_TYPES[number]['value'];
