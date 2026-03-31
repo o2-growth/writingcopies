@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import ProfileToggle from '@/components/ProfileToggle';
 import { toast } from 'sonner';
 import { Pencil, Trash2, Plus } from 'lucide-react';
+import ChampionExamplesEditor from '@/components/ChampionExamplesEditor';
 
 export default function EditorialLines() {
   const [profile, setProfile] = useState<'company' | 'ceo'>('company');
