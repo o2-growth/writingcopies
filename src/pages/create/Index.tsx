@@ -349,7 +349,14 @@ export default function CreatePage() {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Resultados</h2>
           {results.copies.map((copy: any, i: number) => (
-            <CopyResultCard key={i} copy={copy} index={i} onApprove={handleApprove} />
+            <CopyResultCard
+              key={i}
+              copy={copy}
+              index={i}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              isRegenerating={regeneratingIndex === i}
+            />
           ))}
         </div>
       )}
