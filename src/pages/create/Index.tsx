@@ -268,21 +268,23 @@ export default function CreatePage() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Tipo</Label>
-            <Controller
-              name="copy_type"
-              control={control}
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {COPY_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
+          {!isVideoFormat && (
+            <div className="space-y-2">
+              <Label>Tipo</Label>
+              <Controller
+                name="copy_type"
+                control={control}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {COPY_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+          )}
 
           <div className="space-y-2">
             <Label>Tamanho</Label>
