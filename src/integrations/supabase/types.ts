@@ -103,6 +103,54 @@ export type Database = {
           },
         ]
       }
+      champion_examples: {
+        Row: {
+          body: string
+          channel: string
+          created_at: string
+          editorial_line_id: string | null
+          format: string
+          id: string
+          owner_id: string
+          product_id: string | null
+        }
+        Insert: {
+          body: string
+          channel: string
+          created_at?: string
+          editorial_line_id?: string | null
+          format: string
+          id?: string
+          owner_id: string
+          product_id?: string | null
+        }
+        Update: {
+          body?: string
+          channel?: string
+          created_at?: string
+          editorial_line_id?: string | null
+          format?: string
+          id?: string
+          owner_id?: string
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "champion_examples_editorial_line_id_fkey"
+            columns: ["editorial_line_id"]
+            isOneToOne: false
+            referencedRelation: "editorial_lines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "champion_examples_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       company_settings: {
         Row: {
           about: string | null
@@ -316,7 +364,6 @@ export type Database = {
       }
       editorial_lines: {
         Row: {
-          champion_examples: string | null
           content_style: string | null
           created_at: string | null
           id: string
@@ -327,7 +374,6 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          champion_examples?: string | null
           content_style?: string | null
           created_at?: string | null
           id?: string
@@ -338,7 +384,6 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          champion_examples?: string | null
           content_style?: string | null
           created_at?: string | null
           id?: string
@@ -426,7 +471,6 @@ export type Database = {
       products: {
         Row: {
           benefits: string | null
-          best_ads: string | null
           created_at: string | null
           description: string | null
           features: string | null
@@ -439,7 +483,6 @@ export type Database = {
         }
         Insert: {
           benefits?: string | null
-          best_ads?: string | null
           created_at?: string | null
           description?: string | null
           features?: string | null
@@ -452,7 +495,6 @@ export type Database = {
         }
         Update: {
           benefits?: string | null
-          best_ads?: string | null
           created_at?: string | null
           description?: string | null
           features?: string | null
