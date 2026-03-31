@@ -261,9 +261,38 @@ ${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide
 ### IMPORTANTE: Ignore os campos copy_type e size para carrossel. Siga apenas as regras de slides acima.
 ` : "";
 
-    // Determine output format based on carousel
-    const outputFormat = isCarousel
-      ? `{
+    // Video-specific rules
+    const videoRules = isVideo ? `
+## FORMATO: VÍDEO / ROTEIRO (OBRIGATÓRIO)
+
+Você vai criar um roteiro de vídeo. NÃO inclua título ou subtítulo — gere apenas o conteúdo do roteiro.
+
+### REGRAS
+- O campo "script" deve conter o texto falado (narração) e/ou direções de cena.
+- Use marcações para organizar o roteiro:
+  - [CENA] — descrição visual do que aparece na tela
+  - [NARRAÇÃO] — texto que será falado/narrado
+  - [TEXTO NA TELA] — texto que aparece sobreposto no vídeo
+- Nem toda marcação precisa aparecer em todo momento — use conforme fizer sentido.
+- O roteiro deve fluir naturalmente, como se fosse lido ou gravado.
+- Respeite o tamanho indicado pelo guia de size.
+
+### IMPORTANTE: Ignore o campo copy_type para vídeo. Siga apenas as regras de roteiro acima.
+` : "";
+
+    // Determine output format
+    const metaBlock = `"meta": {
+    "channel": "${body.channel}",
+    "objective": "${body.objective}",
+    "copy_type": "${body.copy_type}",
+    "size": "${body.size}",
+    "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
+    "language": "${language}"
+  }`;
+
+    let outputFormat: string;
+    if (isCarousel) {
+      outputFormat = `{
   "copies": [
     {
       "slides": [
@@ -272,28 +301,23 @@ ${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide
       ]
     }
   ],
-  "meta": {
-    "channel": "${body.channel}",
-    "objective": "${body.objective}",
-    "copy_type": "${body.copy_type}",
-    "size": "${body.size}",
-    "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
-    "language": "${language}"
-  }
-}`
-      : `{
+  ${metaBlock}
+}`;
+    } else if (isVideo) {
+      outputFormat = `{
+  "copies": [
+    {"script": "..."}
+  ],
+  ${metaBlock}
+}`;
+    } else {
+      outputFormat = `{
   "copies": [
     {"title": "...", "subtitle": "...", "body": "...", "cta": "..."}
   ],
-  "meta": {
-    "channel": "${body.channel}",
-    "objective": "${body.objective}",
-    "copy_type": "${body.copy_type}",
-    "size": "${body.size}",
-    "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
-    "language": "${language}"
-  }
+  ${metaBlock}
 }`;
+    }
 
     const systemPrompt = `Você é um copywriter profissional que gera copies de alta performance.
 Você DEVE responder EXCLUSIVAMENTE em JSON válido, sem markdown, sem texto antes ou depois.
