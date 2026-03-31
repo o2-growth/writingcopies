@@ -358,7 +358,7 @@ export default function CreatePage() {
           {errors.copywriter_ids && <p className="text-sm text-destructive">{errors.copywriter_ids.message}</p>}
         </div>
 
-        {watch('product_id') && watch('product_id') !== 'none' && ['conversao', 'leads', 'vendas'].includes(watch('objective')) && (
+        {showBestAdsCheckbox && (
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -366,7 +366,7 @@ export default function CreatePage() {
               {...register('use_best_ads')}
               className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
             />
-            <Label htmlFor="use_best_ads" className="cursor-pointer">Usar melhores anúncios como referência</Label>
+            <Label htmlFor="use_best_ads" className="cursor-pointer">Usar copies campeãs como referência</Label>
           </div>
         )}
 
