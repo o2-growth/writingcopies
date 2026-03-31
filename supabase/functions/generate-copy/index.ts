@@ -155,6 +155,32 @@ serve(async (req) => {
     };
 
     const language = company.language || "pt-BR";
+    const isEngagement = body.objective === "engajamento";
+
+    const engagementRules = isEngagement ? `
+## REGRAS DE ENGAJAMENTO PURO (OBRIGATÓRIO)
+
+O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade, educar e entreter.
+
+### ⛔ PROIBIÇÃO ABSOLUTA
+1. NÃO mencione a empresa, seus produtos ou serviços no corpo do conteúdo.
+2. NÃO inclua nenhum tipo de CTA comercial. Nenhum. Zero. Nem disfarçado:
+   - "Descubra como [empresa] pode..."
+   - "Fale com um especialista"
+   - "Agende seu diagnóstico"
+   - "Conheça nosso [produto]"
+   - "Saiba mais em..."
+   - "Transforme [conceito] em [benefício do produto]"
+3. NÃO faça ponte entre o conteúdo e os serviços/produtos da empresa no final.
+4. NÃO use terminologia exclusiva da empresa dentro da narrativa.
+5. NÃO transforme a moral da história em pitch.
+6. O campo "cta" DEVE ser sempre uma string vazia (""), independentemente do copy_type.
+
+### O que este conteúdo DEVE ser
+- Uma história, análise ou reflexão que se sustenta sozinha
+- Conteúdo que o leitor compartilharia mesmo sem saber quem publicou
+- Educativo, inspirador ou provocativo — sem agenda de venda
+` : "";
 
     const systemPrompt = `Você é um copywriter profissional que gera copies de alta performance.
 Você DEVE responder EXCLUSIVAMENTE em JSON válido, sem markdown, sem texto antes ou depois.
@@ -163,6 +189,7 @@ Idioma de saída: ${language}
 ${stylePackA ? `${stylePackA}\n` : ""}
 ${stylePackB ? `${stylePackB}\n` : ""}
 ${blendInstructions}
+${engagementRules}
 
 ## Formato de saída OBRIGATÓRIO:
 {
