@@ -208,14 +208,14 @@ ${engagementRules}
 
     const userPrompt = `Gere ${body.quantity} copy(ies) para:
 
-**Marca:** ${company.brand_name}
-**Voz da marca:** ${company.brand_voice}
+${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
+**Voz da marca:** ${company.brand_voice}`}
 ${company.audience ? `**Público:** ${company.audience}` : ""}
-${company.usp ? `**USP:** ${company.usp}` : ""}
-${company.claims_allowed ? `**Claims permitidos:** ${company.claims_allowed}` : ""}
-${company.disclaimers ? `**Disclaimers:** ${company.disclaimers}` : ""}
+${!isEngagement && company.usp ? `**USP:** ${company.usp}` : ""}
+${!isEngagement && company.claims_allowed ? `**Claims permitidos:** ${company.claims_allowed}` : ""}
+${!isEngagement && company.disclaimers ? `**Disclaimers:** ${company.disclaimers}` : ""}
 
-${product ? `**Produto:** ${product.name}
+${!isEngagement && product ? `**Produto:** ${product.name}
 ${product.description ? `Descrição: ${product.description}` : ""}
 ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
