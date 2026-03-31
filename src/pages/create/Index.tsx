@@ -53,6 +53,16 @@ export default function CreatePage() {
   const selectedCopywriters = watch('copywriter_ids') ?? [];
   const selectedChannel = watch('channel');
   const selectedFormat = watch('format');
+  const selectedProductId = watch('product_id');
+  const selectedObjective = watch('objective');
+
+  const { examples: productChampionExamples } = useChampionExamples({
+    product_id: selectedProductId && selectedProductId !== 'none' ? selectedProductId : undefined,
+  });
+
+  const showBestAdsCheckbox = selectedProductId && selectedProductId !== 'none'
+    && ['conversao', 'leads', 'vendas'].includes(selectedObjective)
+    && productChampionExamples.length > 0;
 
   const availableFormats = FORMATS.filter(f => {
     if (f.value === 'carousel') return selectedChannel === 'instagram' || selectedChannel === 'linkedin';
