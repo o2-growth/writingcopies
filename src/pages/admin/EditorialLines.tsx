@@ -26,7 +26,7 @@ export default function EditorialLines() {
 
   const openNew = () => {
     setEditId(null);
-    reset({ profile, name: '', objective: '', content_style: '', champion_examples: '' });
+    reset({ profile, name: '', objective: '', content_style: '' });
     setDialogOpen(true);
   };
 
