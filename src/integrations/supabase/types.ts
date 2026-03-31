@@ -119,6 +119,7 @@ export type Database = {
           language: string | null
           owner_id: string
           past_clients: string | null
+          profile: string
           updated_at: string | null
           usp: string | null
         }
@@ -137,6 +138,7 @@ export type Database = {
           language?: string | null
           owner_id: string
           past_clients?: string | null
+          profile?: string
           updated_at?: string | null
           usp?: string | null
         }
@@ -155,6 +157,7 @@ export type Database = {
           language?: string | null
           owner_id?: string
           past_clients?: string | null
+          profile?: string
           updated_at?: string | null
           usp?: string | null
         }
@@ -217,18 +220,21 @@ export type Database = {
           id: string
           is_active: boolean
           owner_id: string
+          profile: string
         }
         Insert: {
           copywriter_id: string
           id?: string
           is_active?: boolean
           owner_id: string
+          profile?: string
         }
         Update: {
           copywriter_id?: string
           id?: string
           is_active?: boolean
           owner_id?: string
+          profile?: string
         }
         Relationships: [
           {
@@ -317,6 +323,7 @@ export type Database = {
           name: string
           objective: string | null
           owner_id: string
+          profile: string
           updated_at: string | null
         }
         Insert: {
@@ -327,6 +334,7 @@ export type Database = {
           name: string
           objective?: string | null
           owner_id: string
+          profile?: string
           updated_at?: string | null
         }
         Update: {
@@ -337,6 +345,7 @@ export type Database = {
           name?: string
           objective?: string | null
           owner_id?: string
+          profile?: string
           updated_at?: string | null
         }
         Relationships: []
