@@ -33,9 +33,12 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
   const [feedback, setFeedback] = useState('');
 
   const isCarousel = Array.isArray(copy.slides) && copy.slides.length > 0;
+  const isVideo = !isCarousel && typeof copy.script === 'string' && copy.script.length > 0;
 
   const fullText = isCarousel
     ? copy.slides!.map(s => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
+    : isVideo
+    ? copy.script!
     : [copy.title, copy.subtitle, copy.body, copy.cta].filter(Boolean).join('\n\n');
 
   const handleCopy = async () => {
