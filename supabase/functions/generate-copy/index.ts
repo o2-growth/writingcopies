@@ -66,6 +66,7 @@ serve(async (req) => {
       .from("company_settings")
       .select("*")
       .eq("owner_id", user.id)
+      .eq("profile", body.profile)
       .single();
     if (companyErr || !company) {
       return new Response(JSON.stringify({ error: "Configure sua empresa antes de gerar copies." }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
