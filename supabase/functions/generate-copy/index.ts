@@ -322,7 +322,7 @@ ${product.benefits ? `Benefícios: ${product.benefits}` : ""}
 ${product.features ? `Features: ${product.features}` : ""}
 ${product.objections ? `Objeções: ${product.objections}` : ""}
 ${product.pain_points ? `Dores que resolve: ${product.pain_points}` : ""}
-${product.best_ads && body.use_best_ads ? `**Melhores anúncios de referência (inspiração):**\n${product.best_ads}` : ""}` : ""}
+${productChampionExamples.length > 0 ? `**Copies campeãs de referência (inspiração):**\n${productChampionExamples.map((e: any, i: number) => `${i+1}. [Canal: ${e.channel} | Formato: ${e.format}] "${e.body.substring(0, 500)}"`).join('\n')}` : ''}` : ""}
 
 ${editorialLine ? `**Linha Editorial:** ${editorialLine.name}
 ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""}
