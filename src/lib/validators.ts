@@ -19,6 +19,7 @@ export const generateCopySchema = z.object({
 export type GenerateCopyInput = z.infer<typeof generateCopySchema>;
 
 export const companySettingsSchema = z.object({
+  profile: profileEnum,
   brand_name: z.string().min(1, 'Nome da marca obrigatório').max(200),
   brand_voice: z.string().min(1, 'Voz da marca obrigatória').max(5000),
   audience: z.string().max(2000).optional(),
