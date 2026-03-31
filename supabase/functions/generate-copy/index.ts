@@ -282,7 +282,7 @@ ${carouselRules}
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
-    const userPrompt = `Gere ${body.quantity} copy(ies) para:
+    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : 'copy(ies)'} para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
@@ -305,11 +305,11 @@ ${editorialLine.champion_examples ? `Exemplos de copies campeãs:\n${editorialLi
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
-**Tipo:** ${body.copy_type}
-**Tamanho:** ${body.size} — ${sizeGuide[body.size]}
+${isCarousel ? `**Formato:** Carrossel` : `**Tipo:** ${body.copy_type}
+**Tamanho:** ${body.size} — ${sizeGuide[body.size]}`}
 **Quantidade:** ${body.quantity}
 
-${copyTypeInstructions[body.copy_type]}
+${isCarousel ? 'Siga as regras de carrossel definidas no system prompt.' : copyTypeInstructions[body.copy_type]}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 
