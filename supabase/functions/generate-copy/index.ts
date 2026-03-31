@@ -84,8 +84,19 @@ serve(async (req) => {
       product = p;
     }
 
+    // Load champion examples for product (when use_best_ads)
+    let productChampionExamples: any[] = [];
+    if (product && body.use_best_ads) {
+      const { data: pce } = await supabase
+        .from("champion_examples")
+        .select("body, format, channel")
+        .eq("product_id", body.product_id);
+      productChampionExamples = pce ?? [];
+    }
+
     // Load editorial line if specified
     let editorialLine = null;
+    let editorialChampionExamples: any[] = [];
     if (body.editorial_line_id) {
       const { data: el } = await supabase
         .from("editorial_lines")
@@ -94,6 +105,13 @@ serve(async (req) => {
         .eq("owner_id", user.id)
         .single();
       editorialLine = el;
+
+      // Load champion examples for editorial line
+      const { data: ece } = await supabase
+        .from("champion_examples")
+        .select("body, format, channel")
+        .eq("editorial_line_id", body.editorial_line_id);
+      editorialChampionExamples = ece ?? [];
     }
 
     // Load copywriters
