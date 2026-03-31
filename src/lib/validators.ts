@@ -45,6 +45,7 @@ export const productSchema = z.object({
 export type ProductInput = z.infer<typeof productSchema>;
 
 export const editorialLineSchema = z.object({
+  profile: profileEnum,
   name: z.string().min(1, 'Nome obrigatório').max(200),
   objective: z.string().max(5000).optional(),
   content_style: z.string().max(5000).optional(),
