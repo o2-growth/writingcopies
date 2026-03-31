@@ -12,6 +12,7 @@ export const generateCopySchema = z.object({
   copy_type: z.enum(['titulo', 'subtitulo', 'corpo', 'cta', 'completa']),
   size: z.enum(['S', 'M', 'L', 'XL']),
   format: z.enum(['video', 'static', 'carousel']).optional(),
+  use_best_ads: z.boolean().optional(),
   quantity: z.number().int().min(1).max(5),
   extra_context: z.string().max(2000).optional(),
 });
