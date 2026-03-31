@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, Star } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Copy, Check, Star, ThumbsDown, Send, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface Slide {
@@ -21,10 +22,14 @@ interface Props {
   copy: CopyResult;
   index: number;
   onApprove: (copy: CopyResult) => void;
+  onReject?: (index: number, feedback: string) => Promise<void>;
+  isRegenerating?: boolean;
 }
 
-export default function CopyResultCard({ copy, index, onApprove }: Props) {
+export default function CopyResultCard({ copy, index, onApprove, onReject, isRegenerating }: Props) {
   const [copied, setCopied] = useState(false);
+  const [showRejectForm, setShowRejectForm] = useState(false);
+  const [feedback, setFeedback] = useState('');
 
   const isCarousel = Array.isArray(copy.slides) && copy.slides.length > 0;
 
@@ -39,17 +44,39 @@ export default function CopyResultCard({ copy, index, onApprove }: Props) {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleRejectSubmit = async () => {
+    if (!feedback.trim()) {
+      toast.error('Escreva um comentário para reescrever a copy.');
+      return;
+    }
+    if (onReject) {
+      await onReject(index, feedback.trim());
+      setShowRejectForm(false);
+      setFeedback('');
+    }
+  };
+
   return (
-    <Card className="border-border">
+    <Card className={`border-border ${isRegenerating ? 'opacity-60 pointer-events-none' : ''}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">
             {isCarousel ? `Carrossel #${index + 1}` : `Copy #${index + 1}`}
+            {isRegenerating && <Loader2 className="inline ml-2 h-4 w-4 animate-spin" />}
           </CardTitle>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={handleCopy}>
               {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
               <span className="ml-1">{copied ? 'Copiado' : 'Copiar'}</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowRejectForm(!showRejectForm)}
+              className="gap-1 text-destructive hover:text-destructive"
+            >
+              <ThumbsDown className="h-4 w-4" />
+              Reprovar
             </Button>
             <Button size="sm" onClick={() => onApprove(copy)} className="gap-1">
               <Star className="h-4 w-4" />
@@ -57,6 +84,24 @@ export default function CopyResultCard({ copy, index, onApprove }: Props) {
             </Button>
           </div>
         </div>
+        {showRejectForm && (
+          <div className="mt-3 space-y-2">
+            <Textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Descreva o que deve ser alterado nessa copy..."
+              rows={3}
+            />
+            <div className="flex gap-2 justify-end">
+              <Button variant="ghost" size="sm" onClick={() => { setShowRejectForm(false); setFeedback(''); }}>
+                <X className="h-4 w-4 mr-1" /> Cancelar
+              </Button>
+              <Button size="sm" onClick={handleRejectSubmit} className="gap-1">
+                <Send className="h-4 w-4" /> Reescrever
+              </Button>
+            </div>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="space-y-3">
         {isCarousel ? (
