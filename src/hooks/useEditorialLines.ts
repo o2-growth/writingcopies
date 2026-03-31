@@ -2,16 +2,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { EditorialLineInput } from '@/lib/validators';
 
-export function useEditorialLines() {
+export function useEditorialLines(profile?: 'company' | 'ceo') {
   const qc = useQueryClient();
 
   const query = useQuery({
-    queryKey: ['editorial_lines'],
+    queryKey: ['editorial_lines', profile],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let q = supabase
         .from('editorial_lines')
         .select('*')
         .order('created_at', { ascending: false });
+      if (profile) q = q.eq('profile', profile);
+      const { data, error } = await q;
       if (error) throw error;
       return data;
     },
