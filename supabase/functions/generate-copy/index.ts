@@ -333,7 +333,7 @@ ${videoRules}
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
-    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : 'copy(ies)'} para:
+    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : isVideo ? 'roteiro(s) de vídeo' : 'copy(ies)'} para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
