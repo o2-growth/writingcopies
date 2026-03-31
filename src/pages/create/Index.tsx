@@ -47,6 +47,18 @@ export default function CreatePage() {
   });
 
   const selectedCopywriters = watch('copywriter_ids') ?? [];
+  const selectedChannel = watch('channel');
+  const selectedFormat = watch('format');
+
+  const availableFormats = FORMATS.filter(f => {
+    if (f.value === 'carousel') return selectedChannel === 'instagram' || selectedChannel === 'linkedin';
+    return true;
+  });
+
+  // Reset format if carousel was selected but channel changed to one that doesn't support it
+  if (selectedFormat === 'carousel' && selectedChannel !== 'instagram' && selectedChannel !== 'linkedin') {
+    setValue('format', undefined);
+  }
 
   const toggleCopywriter = (id: string) => {
     const current = selectedCopywriters;
