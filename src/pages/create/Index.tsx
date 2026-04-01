@@ -31,6 +31,7 @@ export default function CreatePage() {
   const { editorialLines } = useEditorialLines(profile);
   const generate = useGenerateCopy();
   const { approve } = useApprovedCopies();
+  const { formats } = useFormats();
 
   const [results, setResults] = useState<any>(null);
   const [lastInput, setLastInput] = useState<GenerateCopyInput | null>(null);
