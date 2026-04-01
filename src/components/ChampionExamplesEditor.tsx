@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useChampionExamples } from '@/hooks/useChampionExamples';
-import { CHANNELS, FORMATS } from '@/lib/constants';
+import { CHANNELS } from '@/lib/constants';
+import { useFormats } from '@/hooks/useFormats';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
