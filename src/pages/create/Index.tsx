@@ -99,7 +99,8 @@ export default function CreatePage() {
   const onSubmit = async (data: GenerateCopyInput) => {
     try {
       setLastInput(data);
-      const result = await generate.mutateAsync(data);
+      const submitData = { ...data, format_id: selectedFormatObj?.id };
+      const result = await generate.mutateAsync(submitData);
       setResults(result);
     } catch (err: any) {
       toast.error(err.message || 'Erro ao gerar');
