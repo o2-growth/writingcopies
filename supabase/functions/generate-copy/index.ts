@@ -235,6 +235,15 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 
     // Video rules removed — now handled by formatRules from DB
 
+    const metaBlock = `"meta": {
+    "channel": "${body.channel}",
+    "objective": "${body.objective}",
+    "copy_type": "${body.copy_type}",
+    "size": "${body.size}",
+    "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
+    "language": "${language}"
+  }`;
+
     // Determine output format based on format record
     const formatName = formatRecord?.name ?? body.format ?? "";
 
