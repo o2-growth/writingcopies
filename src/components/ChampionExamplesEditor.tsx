@@ -15,11 +15,12 @@ interface Props {
   editorial_line_id?: string;
 }
 
-const FORMAT_LABELS: Record<string, string> = { video: 'Vídeo', static: 'Estático', carousel: 'Carrossel' };
 const CHANNEL_LABELS: Record<string, string> = Object.fromEntries(CHANNELS.map(c => [c.value, c.label]));
 
 export default function ChampionExamplesEditor({ product_id, editorial_line_id }: Props) {
   const { examples, isLoading, create, remove } = useChampionExamples({ product_id, editorial_line_id });
+  const { formats } = useFormats();
+  const formatLabels: Record<string, string> = Object.fromEntries(formats.map(f => [f.value, f.name]));
   const [showForm, setShowForm] = useState(false);
   const [body, setBody] = useState('');
   const [format, setFormat] = useState('');
