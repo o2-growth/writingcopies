@@ -77,7 +77,7 @@ export default function ChampionExamplesEditor({ product_id, editorial_line_id }
             <Select value={format} onValueChange={setFormat}>
               <SelectTrigger><SelectValue placeholder="Formato" /></SelectTrigger>
               <SelectContent>
-                {FORMATS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                {formats.map(f => <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={channel} onValueChange={setChannel}>
