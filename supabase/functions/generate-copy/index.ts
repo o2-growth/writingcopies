@@ -218,58 +218,20 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 - Educativo, inspirador ou provocativo — sem agenda de venda
 ` : "";
 
-    const carouselRules = isCarousel ? `
-## FORMATO: CARROSSEL (OBRIGATÓRIO)
-
-Você vai criar o texto para um carrossel de slides. Cada slide será desenhado separadamente (o design não é sua responsabilidade). Sua entrega é exclusivamente o TEXTO de cada slide.
-
-### REGRAS GERAIS
-- Quantidade de slides: Mínimo 6, Máximo 15, Ideal 8-12
-- Cada slide deve conter UMA ideia principal — nunca misture duas ideias no mesmo slide
-- Máximo de 45 palavras por slide
-- Parágrafos curtos: máximo 3 linhas por bloco de texto dentro do slide
-- Se um parágrafo ficou longo, quebre em dois slides
-
-### Técnicas de retenção entre slides
-- Use CLIFFHANGER: a última frase de um slide deve criar tensão ou curiosidade para o próximo
-  - BOM: Slide termina com "A Blockbuster riu da ideia — e recusou." → o leitor precisa passar para saber o que aconteceu
-  - RUIM: Slide termina com "E foi assim que a Netflix começou sua jornada de sucesso." → não há tensão
-- Use CONTRASTE entre slides: um slide apresenta o problema, o próximo apresenta o oposto
-- Use PAUSAS NARRATIVAS: slides curtos de 1-2 frases entre slides mais densos criam ritmo
-
-### O que NUNCA fazer
-- Não numere listas dentro dos slides (ex: "1. Primeiro ponto 2. Segundo ponto") — use slides separados para cada item
-- Não use bullet points — o design resolve isso visualmente, o texto deve ser fluido
-- Não repita a mesma informação em slides diferentes com palavras diferentes
-- Não coloque título + subtítulo + corpo no mesmo slide — escolha um foco
-
-### SLIDE 1 — CAPA
-- Máximo 15 palavras
-- Deve funcionar SOZINHO, sem contexto
-- Deve gerar reação imediata: curiosidade, surpresa, identificação ou discordância
-- NÃO use: logo, slogan, nome da empresa, hashtags, "swipe para ver" ou qualquer instrução
-- NÃO faça perguntas genéricas ("Você sabia que...?", "Quer saber como...?")
-- Fórmulas que funcionam: Afirmação surpreendente, Contraste dramático, Resultado antes da história, Dado de impacto, Provocação
-
-### SLIDE FINAL — ENCERRAMENTO
-${body.channel === "instagram" ? "- Reflexão genuína + pode incluir \"Salva esse post\" ou pergunta para comentários. SEM menção à empresa ou CTA comercial." : ""}
-${body.channel === "linkedin" ? "- Reflexão + pergunta aberta que convide ao debate nos comentários. Tom mais analítico. SEM menção à empresa ou CTA comercial." : ""}
-
-### ADAPTAÇÕES POR CANAL
-${body.channel === "instagram" ? `- Texto mais curto por slide (30-40 palavras ideal)
-- Linguagem mais visual e direta, ritmo rápido
-- Pode usar linguagem mais informal e coloquial
-- Emojis: use com moderação (máximo 1-2 por slide, e só se fizer sentido)
-- Hashtags: NÃO coloque nos slides` : ""}
-${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide (35-50 palavras)
-- Linguagem mais analítica e profissional
-- Pode incluir dados, referências e análises mais densas
-- Tom de artigo/editorial, não de post casual
-- NÃO use emojis nos slides
-- NÃO use hashtags nos slides` : ""}
-
-### IMPORTANTE: Ignore os campos copy_type e size para carrossel. Siga apenas as regras de slides acima.
-` : "";
+    // Dynamic format rules from DB (replaces hardcoded carousel/video rules)
+    let formatRules = "";
+    if (formatRecord?.prompt_instructions) {
+      formatRules = `\n## FORMATO: ${formatRecord.name.toUpperCase()} (OBRIGATÓRIO)\n\n${formatRecord.prompt_instructions}\n`;
+      // Add channel-specific adaptations if needed
+      if (formatRecord.value === "carousel") {
+        formatRules += `\n### ADAPTAÇÕES POR CANAL\n`;
+        if (body.channel === "instagram") {
+          formatRules += `- Texto mais curto por slide (30-40 palavras ideal)\n- Linguagem mais visual e direta, ritmo rápido\n- Pode usar linguagem mais informal e coloquial\n- Emojis: use com moderação (máximo 1-2 por slide, e só se fizer sentido)\n- Hashtags: NÃO coloque nos slides\n`;
+        } else if (body.channel === "linkedin") {
+          formatRules += `- Texto pode ser levemente mais longo por slide (35-50 palavras)\n- Linguagem mais analítica e profissional\n- Tom de artigo/editorial, não de post casual\n- NÃO use emojis nos slides\n- NÃO use hashtags nos slides\n`;
+        }
+      }
+    }
 
     // Video-specific rules
     const videoRules = isVideo ? `
