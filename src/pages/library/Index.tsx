@@ -152,7 +152,7 @@ export default function LibraryPage() {
                     <Badge variant="outline">{item.copy_type}</Badge>
                     {item.format && (
                       <Badge variant="outline" className="border-primary/40 text-primary">
-                        {item.format === 'video' ? 'Vídeo' : 'Estático'}
+                        {formatLabels[item.format] ?? item.format}
                       </Badge>
                     )}
                     {(item.tags ?? []).map((tag: string) => (
