@@ -233,24 +233,7 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
       }
     }
 
-    // Video-specific rules
-    const videoRules = isVideo ? `
-## FORMATO: VÍDEO / ROTEIRO (OBRIGATÓRIO)
-
-Você vai criar um roteiro de vídeo. NÃO inclua título ou subtítulo — gere apenas o conteúdo do roteiro.
-
-### REGRAS
-- O campo "script" deve conter o texto falado (narração) e/ou direções de cena.
-- Use marcações para organizar o roteiro:
-  - [CENA] — descrição visual do que aparece na tela
-  - [NARRAÇÃO] — texto que será falado/narrado
-  - [TEXTO NA TELA] — texto que aparece sobreposto no vídeo
-- Nem toda marcação precisa aparecer em todo momento — use conforme fizer sentido.
-- O roteiro deve fluir naturalmente, como se fosse lido ou gravado.
-- Respeite o tamanho indicado pelo guia de size.
-
-### IMPORTANTE: Ignore o campo copy_type para vídeo. Siga apenas as regras de roteiro acima.
-` : "";
+    // Video rules removed — now handled by formatRules from DB
 
     // Determine output format
     const metaBlock = `"meta": {
