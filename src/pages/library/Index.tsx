@@ -212,8 +212,8 @@ export default function LibraryPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {FORMATS.map(f => (
-                    <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                  {formats.map(f => (
+                    <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
