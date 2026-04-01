@@ -21,6 +21,8 @@ export default function LibraryPage() {
   const { copies, isLoading, update, remove } = useApprovedCopies(filters);
   const { products } = useProducts();
   const { championCopyIds, markChampion } = useChampions();
+  const { formats } = useFormats();
+  const formatLabels: Record<string, string> = Object.fromEntries(formats.map(f => [f.value, f.name]));
 
   const [editItem, setEditItem] = useState<any>(null);
   const [editBody, setEditBody] = useState('');
