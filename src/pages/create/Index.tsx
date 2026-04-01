@@ -275,7 +275,7 @@ export default function CreatePage() {
             />
           </div>
 
-          {!isVideoFormat && (
+          {!isScriptFormat && (
             <div className="space-y-2">
               <Label>Tipo</Label>
               <Controller
