@@ -178,8 +178,20 @@ serve(async (req) => {
 
     const language = company.language || "pt-BR";
     const isEngagement = body.objective === "engajamento";
-    const isCarousel = body.format === "carousel";
-    const isVideo = body.format === "video";
+    // Load format from DB if format_id provided
+    let formatRecord: any = null;
+    if (body.format_id) {
+      const { data: fmt } = await supabase
+        .from("formats")
+        .select("*")
+        .eq("id", body.format_id)
+        .single();
+      formatRecord = fmt;
+    }
+
+    const isCarousel = formatRecord?.value === "carousel" || body.format === "carousel";
+    const isVideo = formatRecord?.has_script_output ?? (body.format === "video");
+    const hasScriptOutput = formatRecord?.has_script_output ?? false;
 
     const engagementRules = isEngagement ? `
 ## REGRAS DE ENGAJAMENTO PURO (OBRIGATÓRIO)
