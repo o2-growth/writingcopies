@@ -276,8 +276,8 @@ ${stylePackA ? `${stylePackA}\n` : ""}
 ${stylePackB ? `${stylePackB}\n` : ""}
 ${blendInstructions}
 ${engagementRules}
-${carouselRules}
-${videoRules}
+${formatRules}
+
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
