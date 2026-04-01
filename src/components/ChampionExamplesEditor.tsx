@@ -107,7 +107,7 @@ export default function ChampionExamplesEditor({ product_id, editorial_line_id }
           <p className="text-sm text-foreground line-clamp-3">{ex.body}</p>
           <div className="flex items-center justify-between">
             <div className="flex gap-1.5">
-              <Badge variant="secondary" className="text-xs">{FORMAT_LABELS[ex.format] ?? ex.format}</Badge>
+              <Badge variant="secondary" className="text-xs">{formatLabels[ex.format] ?? ex.format}</Badge>
               <Badge variant="outline" className="text-xs">{CHANNEL_LABELS[ex.channel] ?? ex.channel}</Badge>
             </div>
             <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDelete(ex.id)}>

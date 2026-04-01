@@ -35,7 +35,7 @@ export type CopyType = typeof COPY_TYPES[number]['value'];
 export type Size = typeof SIZES[number]['value'];
 export type Objective = typeof OBJECTIVES[number]['value'];
 export type Channel = typeof CHANNELS[number]['value'];
-export type Format = typeof FORMATS[number]['value'];
+export type Format = string;
 
 export const PROFILES = [
   { value: 'company', label: 'O2 Inc.', description: 'Perfil institucional da empresa' },

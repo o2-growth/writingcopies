@@ -65,6 +65,7 @@ const App = () => (
               <Route path="/admin/products" element={<ProductsPage />} />
               <Route path="/admin/copywriters" element={<CopywritersPage />} />
               <Route path="/admin/editorial-lines" element={<EditorialLinesPage />} />
+              <Route path="/admin/formats" element={<FormatsPage />} />
             </Route>
             <Route path="/" element={<Navigate to="/create" replace />} />
             <Route path="*" element={<NotFound />} />
