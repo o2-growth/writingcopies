@@ -29,17 +29,13 @@ export const CHANNELS = [
   { value: 'whatsapp', label: 'WhatsApp' },
 ] as const;
 
-export const FORMATS = [
-  { value: 'video',  label: 'Vídeo' },
-  { value: 'static', label: 'Estático' },
-  { value: 'carousel', label: 'Carrossel' },
-] as const;
+// FORMATS removed — now managed dynamically via admin (formats table)
 
 export type CopyType = typeof COPY_TYPES[number]['value'];
 export type Size = typeof SIZES[number]['value'];
 export type Objective = typeof OBJECTIVES[number]['value'];
 export type Channel = typeof CHANNELS[number]['value'];
-export type Format = typeof FORMATS[number]['value'];
+export type Format = string;
 
 export const PROFILES = [
   { value: 'company', label: 'O2 Inc.', description: 'Perfil institucional da empresa' },

@@ -15,6 +15,7 @@ import CompanyPage from "./pages/admin/Company";
 import ProductsPage from "./pages/admin/Products";
 import CopywritersPage from "./pages/admin/Copywriters";
 import EditorialLinesPage from "./pages/admin/EditorialLines";
+import FormatsPage from "./pages/admin/Formats";
 import NotFound from "./pages/NotFound";
 import ControlePage from "./pages/controle/Index";
 import { Loader2 } from "lucide-react";
@@ -64,6 +65,7 @@ const App = () => (
               <Route path="/admin/products" element={<ProductsPage />} />
               <Route path="/admin/copywriters" element={<CopywritersPage />} />
               <Route path="/admin/editorial-lines" element={<EditorialLinesPage />} />
+              <Route path="/admin/formats" element={<FormatsPage />} />
             </Route>
             <Route path="/" element={<Navigate to="/create" replace />} />
             <Route path="*" element={<NotFound />} />

@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Copy, Pencil, Trash2, Trophy, Crown } from 'lucide-react';
-import { FORMATS } from '@/lib/constants';
+import { useFormats } from '@/hooks/useFormats';
 import { cn } from '@/lib/utils';
 
 export default function LibraryPage() {
@@ -21,6 +21,8 @@ export default function LibraryPage() {
   const { copies, isLoading, update, remove } = useApprovedCopies(filters);
   const { products } = useProducts();
   const { championCopyIds, markChampion } = useChampions();
+  const { formats } = useFormats();
+  const formatLabels: Record<string, string> = Object.fromEntries(formats.map(f => [f.value, f.name]));
 
   const [editItem, setEditItem] = useState<any>(null);
   const [editBody, setEditBody] = useState('');
@@ -150,7 +152,7 @@ export default function LibraryPage() {
                     <Badge variant="outline">{item.copy_type}</Badge>
                     {item.format && (
                       <Badge variant="outline" className="border-primary/40 text-primary">
-                        {item.format === 'video' ? 'Vídeo' : 'Estático'}
+                        {formatLabels[item.format] ?? item.format}
                       </Badge>
                     )}
                     {(item.tags ?? []).map((tag: string) => (
@@ -210,8 +212,8 @@ export default function LibraryPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {FORMATS.map(f => (
-                    <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>
+                  {formats.map(f => (
+                    <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

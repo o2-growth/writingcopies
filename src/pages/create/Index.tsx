@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateCopySchema, type GenerateCopyInput } from '@/lib/validators';
-import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS, FORMATS } from '@/lib/constants';
+import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS } from '@/lib/constants';
 import { useProducts } from '@/hooks/useProducts';
 import { useChampionExamples } from '@/hooks/useChampionExamples';
 import { useCopywriters } from '@/hooks/useCopywriters';
 import { useCompany } from '@/hooks/useCompany';
 import { useEditorialLines } from '@/hooks/useEditorialLines';
 import { useGenerateCopy } from '@/hooks/useGenerateCopy';
+import { useFormats } from '@/hooks/useFormats';
 import { useApprovedCopies } from '@/hooks/useApprovedCopies';
 import CopyResultCard from '@/components/CopyResultCard';
 import ApprovedCopyModal from '@/components/ApprovedCopyModal';
@@ -30,6 +31,7 @@ export default function CreatePage() {
   const { editorialLines } = useEditorialLines(profile);
   const generate = useGenerateCopy();
   const { approve } = useApprovedCopies();
+  const { formats } = useFormats();
 
   const [results, setResults] = useState<any>(null);
   const [lastInput, setLastInput] = useState<GenerateCopyInput | null>(null);
@@ -53,7 +55,8 @@ export default function CreatePage() {
   const selectedCopywriters = watch('copywriter_ids') ?? [];
   const selectedChannel = watch('channel');
   const selectedFormat = watch('format');
-  const isVideoFormat = selectedFormat === 'video';
+  const selectedFormatObj = formats.find(f => f.value === selectedFormat);
+  const isScriptFormat = selectedFormatObj?.has_script_output ?? false;
   const selectedProductId = watch('product_id');
   const selectedObjective = watch('objective');
 
@@ -65,13 +68,13 @@ export default function CreatePage() {
     && ['conversao', 'leads', 'vendas'].includes(selectedObjective)
     && productChampionExamples.length > 0;
 
-  const availableFormats = FORMATS.filter(f => {
-    if (f.value === 'carousel') return selectedChannel === 'instagram' || selectedChannel === 'linkedin';
-    return true;
+  const availableFormats = formats.filter(f => {
+    if (!f.channels || f.channels.length === 0) return true;
+    return f.channels.includes(selectedChannel);
   });
 
-  // Reset format if carousel was selected but channel changed to one that doesn't support it
-  if (selectedFormat === 'carousel' && selectedChannel !== 'instagram' && selectedChannel !== 'linkedin') {
+  // Reset format if selected format is no longer available for current channel
+  if (selectedFormat && !availableFormats.some(f => f.value === selectedFormat)) {
     setValue('format', undefined);
   }
 
@@ -96,7 +99,8 @@ export default function CreatePage() {
   const onSubmit = async (data: GenerateCopyInput) => {
     try {
       setLastInput(data);
-      const result = await generate.mutateAsync(data);
+      const submitData = { ...data, format_id: selectedFormatObj?.id };
+      const result = await generate.mutateAsync(submitData);
       setResults(result);
     } catch (err: any) {
       toast.error(err.message || 'Erro ao gerar');
@@ -271,7 +275,7 @@ export default function CreatePage() {
             />
           </div>
 
-          {!isVideoFormat && (
+          {!isScriptFormat && (
             <div className="space-y-2">
               <Label>Tipo</Label>
               <Controller
@@ -335,7 +339,7 @@ export default function CreatePage() {
                   <SelectTrigger><SelectValue placeholder="Selecionar formato" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="none">Não definir</SelectItem>
-                    {availableFormats.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                    {availableFormats.map(f => <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}

@@ -395,6 +395,42 @@ export type Database = {
         }
         Relationships: []
       }
+      formats: {
+        Row: {
+          channels: string[] | null
+          created_at: string
+          has_script_output: boolean
+          id: string
+          name: string
+          owner_id: string
+          prompt_instructions: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          channels?: string[] | null
+          created_at?: string
+          has_script_output?: boolean
+          id?: string
+          name: string
+          owner_id: string
+          prompt_instructions?: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          channels?: string[] | null
+          created_at?: string
+          has_script_output?: boolean
+          id?: string
+          name?: string
+          owner_id?: string
+          prompt_instructions?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       generations: {
         Row: {
           channel: string

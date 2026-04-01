@@ -12,7 +12,6 @@ function validateBody(body: any) {
   const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
   const sizes = ["S", "M", "L", "XL"];
   const profiles = ["company", "ceo"];
-  const formats = ["video", "static", "carousel"];
   const errors: string[] = [];
 
   if (body.product_id && typeof body.product_id !== "string") errors.push("product_id inválido");
@@ -24,9 +23,8 @@ function validateBody(body: any) {
   if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
-  if (body.format && !formats.includes(body.format)) errors.push("format inválido");
+  if (body.format && typeof body.format !== "string") errors.push("format inválido");
   if (!body.profile || !profiles.includes(body.profile)) errors.push("profile inválido");
-  if (body.format === "carousel" && !["instagram", "linkedin"].includes(body.channel)) errors.push("carousel só disponível para Instagram e LinkedIn");
 
   return errors;
 }
@@ -180,8 +178,20 @@ serve(async (req) => {
 
     const language = company.language || "pt-BR";
     const isEngagement = body.objective === "engajamento";
-    const isCarousel = body.format === "carousel";
-    const isVideo = body.format === "video";
+    // Load format from DB if format_id provided
+    let formatRecord: any = null;
+    if (body.format_id) {
+      const { data: fmt } = await supabase
+        .from("formats")
+        .select("*")
+        .eq("id", body.format_id)
+        .single();
+      formatRecord = fmt;
+    }
+
+    const isCarousel = formatRecord?.value === "carousel" || body.format === "carousel";
+    const isVideo = formatRecord?.has_script_output ?? (body.format === "video");
+    const hasScriptOutput = formatRecord?.has_script_output ?? false;
 
     const engagementRules = isEngagement ? `
 ## REGRAS DE ENGAJAMENTO PURO (OBRIGATÓRIO)
@@ -208,79 +218,23 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 - Educativo, inspirador ou provocativo — sem agenda de venda
 ` : "";
 
-    const carouselRules = isCarousel ? `
-## FORMATO: CARROSSEL (OBRIGATÓRIO)
+    // Dynamic format rules from DB (replaces hardcoded carousel/video rules)
+    let formatRules = "";
+    if (formatRecord?.prompt_instructions) {
+      formatRules = `\n## FORMATO: ${formatRecord.name.toUpperCase()} (OBRIGATÓRIO)\n\n${formatRecord.prompt_instructions}\n`;
+      // Add channel-specific adaptations if needed
+      if (formatRecord.value === "carousel") {
+        formatRules += `\n### ADAPTAÇÕES POR CANAL\n`;
+        if (body.channel === "instagram") {
+          formatRules += `- Texto mais curto por slide (30-40 palavras ideal)\n- Linguagem mais visual e direta, ritmo rápido\n- Pode usar linguagem mais informal e coloquial\n- Emojis: use com moderação (máximo 1-2 por slide, e só se fizer sentido)\n- Hashtags: NÃO coloque nos slides\n`;
+        } else if (body.channel === "linkedin") {
+          formatRules += `- Texto pode ser levemente mais longo por slide (35-50 palavras)\n- Linguagem mais analítica e profissional\n- Tom de artigo/editorial, não de post casual\n- NÃO use emojis nos slides\n- NÃO use hashtags nos slides\n`;
+        }
+      }
+    }
 
-Você vai criar o texto para um carrossel de slides. Cada slide será desenhado separadamente (o design não é sua responsabilidade). Sua entrega é exclusivamente o TEXTO de cada slide.
+    // Video rules removed — now handled by formatRules from DB
 
-### REGRAS GERAIS
-- Quantidade de slides: Mínimo 6, Máximo 15, Ideal 8-12
-- Cada slide deve conter UMA ideia principal — nunca misture duas ideias no mesmo slide
-- Máximo de 45 palavras por slide
-- Parágrafos curtos: máximo 3 linhas por bloco de texto dentro do slide
-- Se um parágrafo ficou longo, quebre em dois slides
-
-### Técnicas de retenção entre slides
-- Use CLIFFHANGER: a última frase de um slide deve criar tensão ou curiosidade para o próximo
-  - BOM: Slide termina com "A Blockbuster riu da ideia — e recusou." → o leitor precisa passar para saber o que aconteceu
-  - RUIM: Slide termina com "E foi assim que a Netflix começou sua jornada de sucesso." → não há tensão
-- Use CONTRASTE entre slides: um slide apresenta o problema, o próximo apresenta o oposto
-- Use PAUSAS NARRATIVAS: slides curtos de 1-2 frases entre slides mais densos criam ritmo
-
-### O que NUNCA fazer
-- Não numere listas dentro dos slides (ex: "1. Primeiro ponto 2. Segundo ponto") — use slides separados para cada item
-- Não use bullet points — o design resolve isso visualmente, o texto deve ser fluido
-- Não repita a mesma informação em slides diferentes com palavras diferentes
-- Não coloque título + subtítulo + corpo no mesmo slide — escolha um foco
-
-### SLIDE 1 — CAPA
-- Máximo 15 palavras
-- Deve funcionar SOZINHO, sem contexto
-- Deve gerar reação imediata: curiosidade, surpresa, identificação ou discordância
-- NÃO use: logo, slogan, nome da empresa, hashtags, "swipe para ver" ou qualquer instrução
-- NÃO faça perguntas genéricas ("Você sabia que...?", "Quer saber como...?")
-- Fórmulas que funcionam: Afirmação surpreendente, Contraste dramático, Resultado antes da história, Dado de impacto, Provocação
-
-### SLIDE FINAL — ENCERRAMENTO
-${body.channel === "instagram" ? "- Reflexão genuína + pode incluir \"Salva esse post\" ou pergunta para comentários. SEM menção à empresa ou CTA comercial." : ""}
-${body.channel === "linkedin" ? "- Reflexão + pergunta aberta que convide ao debate nos comentários. Tom mais analítico. SEM menção à empresa ou CTA comercial." : ""}
-
-### ADAPTAÇÕES POR CANAL
-${body.channel === "instagram" ? `- Texto mais curto por slide (30-40 palavras ideal)
-- Linguagem mais visual e direta, ritmo rápido
-- Pode usar linguagem mais informal e coloquial
-- Emojis: use com moderação (máximo 1-2 por slide, e só se fizer sentido)
-- Hashtags: NÃO coloque nos slides` : ""}
-${body.channel === "linkedin" ? `- Texto pode ser levemente mais longo por slide (35-50 palavras)
-- Linguagem mais analítica e profissional
-- Pode incluir dados, referências e análises mais densas
-- Tom de artigo/editorial, não de post casual
-- NÃO use emojis nos slides
-- NÃO use hashtags nos slides` : ""}
-
-### IMPORTANTE: Ignore os campos copy_type e size para carrossel. Siga apenas as regras de slides acima.
-` : "";
-
-    // Video-specific rules
-    const videoRules = isVideo ? `
-## FORMATO: VÍDEO / ROTEIRO (OBRIGATÓRIO)
-
-Você vai criar um roteiro de vídeo. NÃO inclua título ou subtítulo — gere apenas o conteúdo do roteiro.
-
-### REGRAS
-- O campo "script" deve conter o texto falado (narração) e/ou direções de cena.
-- Use marcações para organizar o roteiro:
-  - [CENA] — descrição visual do que aparece na tela
-  - [NARRAÇÃO] — texto que será falado/narrado
-  - [TEXTO NA TELA] — texto que aparece sobreposto no vídeo
-- Nem toda marcação precisa aparecer em todo momento — use conforme fizer sentido.
-- O roteiro deve fluir naturalmente, como se fosse lido ou gravado.
-- Respeite o tamanho indicado pelo guia de size.
-
-### IMPORTANTE: Ignore o campo copy_type para vídeo. Siga apenas as regras de roteiro acima.
-` : "";
-
-    // Determine output format
     const metaBlock = `"meta": {
     "channel": "${body.channel}",
     "objective": "${body.objective}",
@@ -289,6 +243,9 @@ Você vai criar um roteiro de vídeo. NÃO inclua título ou subtítulo — gere
     "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
     "language": "${language}"
   }`;
+
+    // Determine output format based on format record
+    const formatName = formatRecord?.name ?? body.format ?? "";
 
     let outputFormat: string;
     if (isCarousel) {
@@ -303,7 +260,7 @@ Você vai criar um roteiro de vídeo. NÃO inclua título ou subtítulo — gere
   ],
   ${metaBlock}
 }`;
-    } else if (isVideo) {
+    } else if (hasScriptOutput) {
       outputFormat = `{
   "copies": [
     {"script": "..."}
@@ -328,12 +285,12 @@ ${stylePackA ? `${stylePackA}\n` : ""}
 ${stylePackB ? `${stylePackB}\n` : ""}
 ${blendInstructions}
 ${engagementRules}
-${carouselRules}
-${videoRules}
+${formatRules}
+
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
-    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : isVideo ? 'roteiro(s) de vídeo' : 'copy(ies)'} para:
+    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : hasScriptOutput ? 'roteiro(s)' : 'copy(ies)'} para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
@@ -357,11 +314,12 @@ ${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editor
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
-${isCarousel ? `**Formato:** Carrossel` : isVideo ? `**Formato:** Vídeo\n**Tamanho:** ${body.size} — ${sizeGuide[body.size]}` : `**Tipo:** ${body.copy_type}
-**Tamanho:** ${body.size} — ${sizeGuide[body.size]}`}
+${formatName ? `**Formato:** ${formatName}` : ""}
+${isCarousel ? '' : `**Tipo:** ${body.copy_type}`}
+**Tamanho:** ${body.size} — ${sizeGuide[body.size]}
 **Quantidade:** ${body.quantity}
 
-${isCarousel ? 'Siga as regras de carrossel definidas no system prompt.' : isVideo ? 'Siga as regras de roteiro de vídeo definidas no system prompt.' : copyTypeInstructions[body.copy_type]}
+${isCarousel ? `Siga as regras de ${formatName || 'carrossel'} definidas no system prompt.` : hasScriptOutput ? `Siga as regras de ${formatName || 'roteiro'} definidas no system prompt.` : copyTypeInstructions[body.copy_type]}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 

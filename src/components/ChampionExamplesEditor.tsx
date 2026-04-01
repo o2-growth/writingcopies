@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useChampionExamples } from '@/hooks/useChampionExamples';
-import { CHANNELS, FORMATS } from '@/lib/constants';
+import { CHANNELS } from '@/lib/constants';
+import { useFormats } from '@/hooks/useFormats';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -14,11 +15,12 @@ interface Props {
   editorial_line_id?: string;
 }
 
-const FORMAT_LABELS: Record<string, string> = { video: 'Vídeo', static: 'Estático', carousel: 'Carrossel' };
 const CHANNEL_LABELS: Record<string, string> = Object.fromEntries(CHANNELS.map(c => [c.value, c.label]));
 
 export default function ChampionExamplesEditor({ product_id, editorial_line_id }: Props) {
   const { examples, isLoading, create, remove } = useChampionExamples({ product_id, editorial_line_id });
+  const { formats } = useFormats();
+  const formatLabels: Record<string, string> = Object.fromEntries(formats.map(f => [f.value, f.name]));
   const [showForm, setShowForm] = useState(false);
   const [body, setBody] = useState('');
   const [format, setFormat] = useState('');
@@ -75,7 +77,7 @@ export default function ChampionExamplesEditor({ product_id, editorial_line_id }
             <Select value={format} onValueChange={setFormat}>
               <SelectTrigger><SelectValue placeholder="Formato" /></SelectTrigger>
               <SelectContent>
-                {FORMATS.map(f => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}
+                {formats.map(f => <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>)}
               </SelectContent>
             </Select>
             <Select value={channel} onValueChange={setChannel}>
@@ -105,7 +107,7 @@ export default function ChampionExamplesEditor({ product_id, editorial_line_id }
           <p className="text-sm text-foreground line-clamp-3">{ex.body}</p>
           <div className="flex items-center justify-between">
             <div className="flex gap-1.5">
-              <Badge variant="secondary" className="text-xs">{FORMAT_LABELS[ex.format] ?? ex.format}</Badge>
+              <Badge variant="secondary" className="text-xs">{formatLabels[ex.format] ?? ex.format}</Badge>
               <Badge variant="outline" className="text-xs">{CHANNEL_LABELS[ex.channel] ?? ex.channel}</Badge>
             </div>
             <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleDelete(ex.id)}>
