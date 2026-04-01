@@ -55,7 +55,8 @@ export default function CreatePage() {
   const selectedCopywriters = watch('copywriter_ids') ?? [];
   const selectedChannel = watch('channel');
   const selectedFormat = watch('format');
-  const isVideoFormat = selectedFormat === 'video';
+  const selectedFormatObj = formats.find(f => f.value === selectedFormat);
+  const isScriptFormat = selectedFormatObj?.has_script_output ?? false;
   const selectedProductId = watch('product_id');
   const selectedObjective = watch('objective');
 
