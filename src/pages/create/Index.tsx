@@ -68,13 +68,13 @@ export default function CreatePage() {
     && ['conversao', 'leads', 'vendas'].includes(selectedObjective)
     && productChampionExamples.length > 0;
 
-  const availableFormats = FORMATS.filter(f => {
-    if (f.value === 'carousel') return selectedChannel === 'instagram' || selectedChannel === 'linkedin';
-    return true;
+  const availableFormats = formats.filter(f => {
+    if (!f.channels || f.channels.length === 0) return true;
+    return f.channels.includes(selectedChannel);
   });
 
-  // Reset format if carousel was selected but channel changed to one that doesn't support it
-  if (selectedFormat === 'carousel' && selectedChannel !== 'instagram' && selectedChannel !== 'linkedin') {
+  // Reset format if selected format is no longer available for current channel
+  if (selectedFormat && !availableFormats.some(f => f.value === selectedFormat)) {
     setValue('format', undefined);
   }
 
