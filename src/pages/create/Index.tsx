@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateCopySchema, type GenerateCopyInput } from '@/lib/validators';
-import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS, FORMATS } from '@/lib/constants';
+import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS } from '@/lib/constants';
 import { useProducts } from '@/hooks/useProducts';
 import { useChampionExamples } from '@/hooks/useChampionExamples';
 import { useCopywriters } from '@/hooks/useCopywriters';
