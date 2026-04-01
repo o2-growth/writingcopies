@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Copy, Pencil, Trash2, Trophy, Crown } from 'lucide-react';
-import { FORMATS } from '@/lib/constants';
+import { useFormats } from '@/hooks/useFormats';
 import { cn } from '@/lib/utils';
 
 export default function LibraryPage() {
