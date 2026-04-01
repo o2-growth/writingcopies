@@ -281,7 +281,7 @@ ${formatRules}
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
-    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : isVideo ? 'roteiro(s) de vídeo' : 'copy(ies)'} para:
+    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : hasScriptOutput ? 'roteiro(s)' : 'copy(ies)'} para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
@@ -305,11 +305,12 @@ ${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editor
 
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
-${isCarousel ? `**Formato:** Carrossel` : isVideo ? `**Formato:** Vídeo\n**Tamanho:** ${body.size} — ${sizeGuide[body.size]}` : `**Tipo:** ${body.copy_type}
-**Tamanho:** ${body.size} — ${sizeGuide[body.size]}`}
+${formatName ? `**Formato:** ${formatName}` : ""}
+${isCarousel ? '' : `**Tipo:** ${body.copy_type}`}
+**Tamanho:** ${body.size} — ${sizeGuide[body.size]}
 **Quantidade:** ${body.quantity}
 
-${isCarousel ? 'Siga as regras de carrossel definidas no system prompt.' : isVideo ? 'Siga as regras de roteiro de vídeo definidas no system prompt.' : copyTypeInstructions[body.copy_type]}
+${isCarousel ? `Siga as regras de ${formatName || 'carrossel'} definidas no system prompt.` : hasScriptOutput ? `Siga as regras de ${formatName || 'roteiro'} definidas no system prompt.` : copyTypeInstructions[body.copy_type]}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 
