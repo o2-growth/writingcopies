@@ -12,7 +12,6 @@ function validateBody(body: any) {
   const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
   const sizes = ["S", "M", "L", "XL"];
   const profiles = ["company", "ceo"];
-  const formats = ["video", "static", "carousel"];
   const errors: string[] = [];
 
   if (body.product_id && typeof body.product_id !== "string") errors.push("product_id inválido");
@@ -24,9 +23,8 @@ function validateBody(body: any) {
   if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
-  if (body.format && !formats.includes(body.format)) errors.push("format inválido");
+  if (body.format && typeof body.format !== "string") errors.push("format inválido");
   if (!body.profile || !profiles.includes(body.profile)) errors.push("profile inválido");
-  if (body.format === "carousel" && !["instagram", "linkedin"].includes(body.channel)) errors.push("carousel só disponível para Instagram e LinkedIn");
 
   return errors;
 }
