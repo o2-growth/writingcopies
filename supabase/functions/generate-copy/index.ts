@@ -216,19 +216,10 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 - Educativo, inspirador ou provocativo — sem agenda de venda
 ` : "";
 
-    // Dynamic format rules from DB (replaces hardcoded carousel/video rules)
+    // Dynamic format rules from DB
     let formatRules = "";
     if (formatRecord?.prompt_instructions) {
       formatRules = `\n## FORMATO: ${formatRecord.name.toUpperCase()} (OBRIGATÓRIO)\n\n${formatRecord.prompt_instructions}\n`;
-      // Add channel-specific adaptations if needed
-      if (formatRecord.value === "carousel") {
-        formatRules += `\n### ADAPTAÇÕES POR CANAL\n`;
-        if (body.channel === "instagram") {
-          formatRules += `- Texto mais curto por slide (30-40 palavras ideal)\n- Linguagem mais visual e direta, ritmo rápido\n- Pode usar linguagem mais informal e coloquial\n- Emojis: use com moderação (máximo 1-2 por slide, e só se fizer sentido)\n- Hashtags: NÃO coloque nos slides\n`;
-        } else if (body.channel === "linkedin") {
-          formatRules += `- Texto pode ser levemente mais longo por slide (35-50 palavras)\n- Linguagem mais analítica e profissional\n- Tom de artigo/editorial, não de post casual\n- NÃO use emojis nos slides\n- NÃO use hashtags nos slides\n`;
-        }
-      }
     }
 
     // Video rules removed — now handled by formatRules from DB
