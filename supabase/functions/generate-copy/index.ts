@@ -269,7 +269,7 @@ ${isInstagram ? `\n## REGRA INSTAGRAM — LEGENDA (OBRIGATÓRIO)\nQuando o canal
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
-    const userPrompt = `Gere ${body.quantity} ${isCarousel ? 'carrossel(éis)' : hasScriptOutput ? 'roteiro(s)' : 'copy(ies)'} para:
+    const userPrompt = `Gere ${body.quantity} ${hasScriptOutput ? 'roteiro(s)' : 'copy(ies)'} para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
