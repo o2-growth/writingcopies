@@ -17,6 +17,7 @@ interface CopyResult {
   cta?: string;
   slides?: Slide[];
   script?: string;
+  caption?: string;
 }
 
 interface Props {
