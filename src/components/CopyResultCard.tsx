@@ -5,17 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Copy, Check, Star, ThumbsDown, Send, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface Slide {
-  slide_number: number;
-  text: string;
-}
-
 interface CopyResult {
   title?: string;
   subtitle?: string;
   body?: string;
   cta?: string;
-  slides?: Slide[];
   script?: string;
   caption?: string;
 }
