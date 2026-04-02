@@ -189,8 +189,6 @@ serve(async (req) => {
       formatRecord = fmt;
     }
 
-    const isCarousel = formatRecord?.value === "carousel" || body.format === "carousel";
-    const isVideo = formatRecord?.has_script_output ?? (body.format === "video");
     const hasScriptOutput = formatRecord?.has_script_output ?? false;
 
     const engagementRules = isEngagement ? `
