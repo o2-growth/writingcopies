@@ -156,7 +156,7 @@ export default function CreatePage() {
         ? `${contentBody}\n\n**Legenda:**\n${approveModal.copy.caption}`
         : contentBody;
       await approve.mutateAsync({
-        title: isCarousel ? 'Carrossel' : isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
+        title: isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
         body: fullBody,
         channel: lastInput.channel,
         objective: lastInput.objective,
