@@ -239,14 +239,7 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
     const captionField = isInstagram ? `,\n      "caption": "Legenda do post com hashtags relevantes"` : "";
 
     let outputFormat: string;
-    if (isCarousel) {
-      outputFormat = `{
-  "copies": [
-    {"body": "Slide 1:\\n[conteúdo do slide 1]\\n\\nSlide 2:\\n[conteúdo do slide 2]\\n\\nSlide 3:\\n[conteúdo do slide 3]", "cta": "..."${captionField}}
-  ],
-  ${metaBlock}
-}`;
-    } else if (hasScriptOutput) {
+    if (hasScriptOutput) {
       outputFormat = `{
   "copies": [
     {"script": "..."${captionField}}
