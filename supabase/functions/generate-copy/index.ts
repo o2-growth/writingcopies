@@ -298,7 +298,8 @@ ${isCarousel ? '' : `**Tipo:** ${body.copy_type}`}
 **Tamanho:** ${body.size} — ${sizeGuide[body.size]}
 **Quantidade:** ${body.quantity}
 
-${isCarousel ? `Siga as regras de ${formatName || 'carrossel'} definidas no system prompt.` : hasScriptOutput ? `Siga as regras de ${formatName || 'roteiro'} definidas no system prompt.` : copyTypeInstructions[body.copy_type]}
+${hasScriptOutput ? `Siga as regras de ${formatName || 'roteiro'} definidas no system prompt.` : copyTypeInstructions[body.copy_type]}
+${formatRecord?.prompt_instructions ? `\nSiga também as regras de formato "${formatName}" definidas no system prompt.` : ''}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 
