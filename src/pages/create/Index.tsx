@@ -149,12 +149,15 @@ export default function CreatePage() {
     try {
       const isCarousel = Array.isArray(approveModal.copy.slides) && approveModal.copy.slides.length > 0;
       const isVideo = !isCarousel && typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
-      const fullBody = isCarousel
+      const contentBody = isCarousel
         ? approveModal.copy.slides.map((s: any) => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
         : isVideo
         ? approveModal.copy.script
         : [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
           .filter(Boolean).join('\n\n');
+      const fullBody = approveModal.copy.caption
+        ? `${contentBody}\n\n**Legenda:**\n${approveModal.copy.caption}`
+        : contentBody;
       await approve.mutateAsync({
         title: isCarousel ? 'Carrossel' : isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
         body: fullBody,

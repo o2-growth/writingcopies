@@ -17,6 +17,7 @@ interface CopyResult {
   cta?: string;
   slides?: Slide[];
   script?: string;
+  caption?: string;
 }
 
 interface Props {
@@ -35,11 +36,13 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
   const isCarousel = Array.isArray(copy.slides) && copy.slides.length > 0;
   const isVideo = !isCarousel && typeof copy.script === 'string' && copy.script.length > 0;
 
-  const fullText = isCarousel
+  const contentText = isCarousel
     ? copy.slides!.map(s => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
     : isVideo
     ? copy.script!
     : [copy.title, copy.subtitle, copy.body, copy.cta].filter(Boolean).join('\n\n');
+
+  const fullText = copy.caption ? `${contentText}\n\n**Legenda:**\n${copy.caption}` : contentText;
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(fullText);
@@ -149,6 +152,12 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
               </div>
             )}
           </>
+        )}
+        {copy.caption && (
+          <div className="mt-4 border-t border-border pt-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase">Legenda</p>
+            <p className="text-foreground whitespace-pre-wrap">{copy.caption}</p>
+          </div>
         )}
       </CardContent>
     </Card>
