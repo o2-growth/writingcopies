@@ -102,16 +102,7 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
         )}
       </CardHeader>
       <CardContent className="space-y-3">
-        {isCarousel ? (
-          copy.slides!.map(slide => (
-            <div key={slide.slide_number} className="border-l-2 border-primary/30 pl-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
-                Slide {slide.slide_number}
-              </p>
-              <p className="text-foreground whitespace-pre-wrap">{slide.text}</p>
-            </div>
-          ))
-        ) : isVideo ? (
+        {isVideo ? (
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase">Roteiro</p>
             <p className="text-foreground whitespace-pre-wrap">{copy.script}</p>

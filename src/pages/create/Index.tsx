@@ -116,10 +116,7 @@ export default function CreatePage() {
     setRegeneratingIndex(index);
     try {
       const originalCopy = results.copies[index];
-      const isCarousel = Array.isArray(originalCopy.slides) && originalCopy.slides.length > 0;
-      const originalText = isCarousel
-        ? originalCopy.slides.map((s: any) => `Slide ${s.slide_number}: ${s.text}`).join('\n')
-        : [originalCopy.title, originalCopy.subtitle, originalCopy.body, originalCopy.cta].filter(Boolean).join('\n');
+      const originalText = [originalCopy.title, originalCopy.subtitle, originalCopy.body, originalCopy.cta, originalCopy.script].filter(Boolean).join('\n');
 
       const rewriteContext = `REESCRITA SOLICITADA. A copy anterior foi reprovada. Segue a copy original:\n---\n${originalText}\n---\nMotivo da reprovação / instruções de reescrita:\n${feedback}\n\nGere uma nova versão corrigida seguindo essas instruções.`;
 

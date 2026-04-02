@@ -253,12 +253,7 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
     if (isCarousel) {
       outputFormat = `{
   "copies": [
-    {
-      "slides": [
-        {"slide_number": 1, "text": "..."},
-        {"slide_number": 2, "text": "..."}
-      ]${captionField}
-    }
+    {"body": "Slide 1:\\n[conteúdo do slide 1]\\n\\nSlide 2:\\n[conteúdo do slide 2]\\n\\nSlide 3:\\n[conteúdo do slide 3]", "cta": "..."${captionField}}
   ],
   ${metaBlock}
 }`;
