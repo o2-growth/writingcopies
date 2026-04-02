@@ -1,31 +1,32 @@
 
 
-## Plan: Add "Legenda" (caption) field for Instagram channel
+## Plan: Carousel output as single `body` field with slide separators
 
 ### Problem
-When generating copies for Instagram, there's no caption ("legenda") field. Instagram posts need a caption separate from the copy content (title/body/cta or carousel slides).
+Currently, carousel copies return as an array of `{slide_number, text}` objects. The user wants carousel content in a **single `body` field** with clear slide separators (e.g. `Slide 1:\n...\nSlide 2:\n...`).
 
 ### Approach
-When channel is `instagram`, add a `caption` field to the AI output for all format types (standard, carousel, video/script). Display it in the result card and include it in clipboard/approve flows.
+Change the AI output format for carousels from `slides[]` to a single `body` field, and update the frontend to parse/render slide separators.
 
 ### 1. Edge function — `supabase/functions/generate-copy/index.ts`
 
-- Detect `isInstagram = body.channel === "instagram"`
-- When Instagram, modify the output JSON format to include `"caption": "..."` alongside existing fields (in all 3 branches: standard, carousel, script)
-- Add prompt instruction: `"Quando o canal for Instagram, inclua um campo 'caption' com a legenda do post. A legenda deve incluir hashtags relevantes se apropriado."`
+- Change carousel output format from `{"slides": [...]}` to `{"body": "Slide 1:\n...\n\nSlide 2:\n...", "cta": "..."}`
+- Update prompt instructions to tell the AI to output all slides in a single `body` field, separated by `Slide 1:`, `Slide 2:`, etc.
+- Keep the `caption` field for Instagram
 
 ### 2. Result card — `src/components/CopyResultCard.tsx`
 
-- Add `caption?: string` to the `CopyResult` interface
-- After all content sections (standard, carousel, or video), render a "Legenda" block if `copy.caption` exists
-- Include caption in `fullText` for clipboard
+- Remove `Slide` interface and `slides`-based detection/rendering
+- Carousel copies now arrive as standard `body` field — render with `whitespace-pre-wrap` (same as standard body)
+- The slide separators (`Slide 1:`, `Slide 2:`, etc.) will be visible naturally in the text
+- Optionally: parse `Slide N:` markers to render with the existing styled separator UI
 
 ### 3. Create page — `src/pages/create/Index.tsx`
 
-- Update `handleSaveApproved` to append caption to the body when saving (so it's preserved in approved_copies)
+- Update `handleSaveApproved` — carousel copies now use `body` directly (no more `slides.map()` conversion)
 
 ### Files affected
-1. `supabase/functions/generate-copy/index.ts` — caption in output format + prompt rules
-2. `src/components/CopyResultCard.tsx` — render caption section
-3. `src/pages/create/Index.tsx` — include caption in approve flow
+1. `supabase/functions/generate-copy/index.ts` — change carousel output format
+2. `src/components/CopyResultCard.tsx` — simplify rendering (remove slides array logic)
+3. `src/pages/create/Index.tsx` — simplify approve handler
 
