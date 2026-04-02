@@ -153,6 +153,12 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
             )}
           </>
         )}
+        {copy.caption && (
+          <div className="mt-4 border-t border-border pt-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase">Legenda</p>
+            <p className="text-foreground whitespace-pre-wrap">{copy.caption}</p>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
