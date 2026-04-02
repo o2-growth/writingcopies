@@ -5,17 +5,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Copy, Check, Star, ThumbsDown, Send, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface Slide {
-  slide_number: number;
-  text: string;
-}
-
 interface CopyResult {
   title?: string;
   subtitle?: string;
   body?: string;
   cta?: string;
-  slides?: Slide[];
   script?: string;
   caption?: string;
 }
@@ -33,12 +27,9 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [feedback, setFeedback] = useState('');
 
-  const isCarousel = Array.isArray(copy.slides) && copy.slides.length > 0;
-  const isVideo = !isCarousel && typeof copy.script === 'string' && copy.script.length > 0;
+  const isVideo = typeof copy.script === 'string' && copy.script.length > 0;
 
-  const contentText = isCarousel
-    ? copy.slides!.map(s => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
-    : isVideo
+  const contentText = isVideo
     ? copy.script!
     : [copy.title, copy.subtitle, copy.body, copy.cta].filter(Boolean).join('\n\n');
 
@@ -68,7 +59,7 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">
-            {isCarousel ? `Carrossel #${index + 1}` : isVideo ? `Roteiro #${index + 1}` : `Copy #${index + 1}`}
+            {isVideo ? `Roteiro #${index + 1}` : `Copy #${index + 1}`}
             {isRegenerating && <Loader2 className="inline ml-2 h-4 w-4 animate-spin" />}
           </CardTitle>
           <div className="flex gap-2">
@@ -111,16 +102,7 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
         )}
       </CardHeader>
       <CardContent className="space-y-3">
-        {isCarousel ? (
-          copy.slides!.map(slide => (
-            <div key={slide.slide_number} className="border-l-2 border-primary/30 pl-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase">
-                Slide {slide.slide_number}
-              </p>
-              <p className="text-foreground whitespace-pre-wrap">{slide.text}</p>
-            </div>
-          ))
-        ) : isVideo ? (
+        {isVideo ? (
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase">Roteiro</p>
             <p className="text-foreground whitespace-pre-wrap">{copy.script}</p>

@@ -116,10 +116,7 @@ export default function CreatePage() {
     setRegeneratingIndex(index);
     try {
       const originalCopy = results.copies[index];
-      const isCarousel = Array.isArray(originalCopy.slides) && originalCopy.slides.length > 0;
-      const originalText = isCarousel
-        ? originalCopy.slides.map((s: any) => `Slide ${s.slide_number}: ${s.text}`).join('\n')
-        : [originalCopy.title, originalCopy.subtitle, originalCopy.body, originalCopy.cta].filter(Boolean).join('\n');
+      const originalText = [originalCopy.title, originalCopy.subtitle, originalCopy.body, originalCopy.cta, originalCopy.script].filter(Boolean).join('\n');
 
       const rewriteContext = `REESCRITA SOLICITADA. A copy anterior foi reprovada. Segue a copy original:\n---\n${originalText}\n---\nMotivo da reprovação / instruções de reescrita:\n${feedback}\n\nGere uma nova versão corrigida seguindo essas instruções.`;
 
@@ -147,11 +144,8 @@ export default function CreatePage() {
   const handleSaveApproved = async ({ tags, notes }: { tags: string[]; notes: string }) => {
     if (!lastInput || !approveModal.copy) return;
     try {
-      const isCarousel = Array.isArray(approveModal.copy.slides) && approveModal.copy.slides.length > 0;
-      const isVideo = !isCarousel && typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
-      const contentBody = isCarousel
-        ? approveModal.copy.slides.map((s: any) => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
-        : isVideo
+      const isVideo = typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
+      const contentBody = isVideo
         ? approveModal.copy.script
         : [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
           .filter(Boolean).join('\n\n');
@@ -159,7 +153,7 @@ export default function CreatePage() {
         ? `${contentBody}\n\n**Legenda:**\n${approveModal.copy.caption}`
         : contentBody;
       await approve.mutateAsync({
-        title: isCarousel ? 'Carrossel' : isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
+        title: isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
         body: fullBody,
         channel: lastInput.channel,
         objective: lastInput.objective,
