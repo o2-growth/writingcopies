@@ -246,6 +246,8 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 
     // Determine output format based on format record
     const formatName = formatRecord?.name ?? body.format ?? "";
+    const isInstagram = body.channel === "instagram";
+    const captionField = isInstagram ? `,\n      "caption": "Legenda do post com hashtags relevantes"` : "";
 
     let outputFormat: string;
     if (isCarousel) {
@@ -255,7 +257,7 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
       "slides": [
         {"slide_number": 1, "text": "..."},
         {"slide_number": 2, "text": "..."}
-      ]
+      ]${captionField}
     }
   ],
   ${metaBlock}
@@ -263,14 +265,14 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
     } else if (hasScriptOutput) {
       outputFormat = `{
   "copies": [
-    {"script": "..."}
+    {"script": "..."${captionField}}
   ],
   ${metaBlock}
 }`;
     } else {
       outputFormat = `{
   "copies": [
-    {"title": "...", "subtitle": "...", "body": "...", "cta": "..."}
+    {"title": "...", "subtitle": "...", "body": "...", "cta": "..."${captionField}}
   ],
   ${metaBlock}
 }`;
