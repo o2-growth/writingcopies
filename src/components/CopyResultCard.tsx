@@ -59,7 +59,7 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">
-            {isCarousel ? `Carrossel #${index + 1}` : isVideo ? `Roteiro #${index + 1}` : `Copy #${index + 1}`}
+            {isVideo ? `Roteiro #${index + 1}` : `Copy #${index + 1}`}
             {isRegenerating && <Loader2 className="inline ml-2 h-4 w-4 animate-spin" />}
           </CardTitle>
           <div className="flex gap-2">
