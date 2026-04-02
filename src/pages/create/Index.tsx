@@ -147,11 +147,8 @@ export default function CreatePage() {
   const handleSaveApproved = async ({ tags, notes }: { tags: string[]; notes: string }) => {
     if (!lastInput || !approveModal.copy) return;
     try {
-      const isCarousel = Array.isArray(approveModal.copy.slides) && approveModal.copy.slides.length > 0;
-      const isVideo = !isCarousel && typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
-      const contentBody = isCarousel
-        ? approveModal.copy.slides.map((s: any) => `**Slide ${s.slide_number}**\n${s.text}`).join('\n\n')
-        : isVideo
+      const isVideo = typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
+      const contentBody = isVideo
         ? approveModal.copy.script
         : [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
           .filter(Boolean).join('\n\n');
