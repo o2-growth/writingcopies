@@ -9,8 +9,6 @@ const corsHeaders = {
 function validateBody(body: any) {
   const channels = ["twitter", "instagram", "linkedin", "email", "whatsapp"];
   const objectives = ["awareness", "engajamento", "leads", "conversao", "vendas"];
-  const copyTypes = ["titulo", "subtitulo", "corpo", "cta", "completa"];
-  const sizes = ["S", "M", "L", "XL"];
   const profiles = ["company", "ceo"];
   const errors: string[] = [];
 
@@ -18,8 +16,6 @@ function validateBody(body: any) {
   if (!Array.isArray(body.copywriter_ids) || body.copywriter_ids.length > 2) errors.push("copywriter_ids: array max 2");
   if (!channels.includes(body.channel)) errors.push("channel inválido");
   if (!objectives.includes(body.objective)) errors.push("objective inválido");
-  if (!copyTypes.includes(body.copy_type)) errors.push("copy_type inválido");
-  if (!sizes.includes(body.size)) errors.push("size inválido");
   if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
   if (body.extra_context && typeof body.extra_context !== "string") errors.push("extra_context inválido");
@@ -154,30 +150,13 @@ serve(async (req) => {
 - Use o VOCABULÁRIO e RITMO do estilo de ${copywriterB.name}
 - Em conflitos de formalidade: prefira o mais formal
 - Limite emojis a no máximo 1 se qualquer estilo for formal
-- Bullets são permitidos apenas se copy_type for "corpo" ou "completa"
+- Bullets são permitidos se o formato permitir
 `;
     }
 
-    // Copy type instructions
-    const copyTypeInstructions: Record<string, string> = {
-      titulo: 'Preencha APENAS o campo "title". Deixe subtitle, body e cta como strings vazias.',
-      subtitulo: 'Preencha APENAS o campo "subtitle". Deixe title, body e cta como strings vazias.',
-      corpo: 'Preencha APENAS o campo "body". Deixe title, subtitle e cta como strings vazias.',
-      cta: 'Preencha APENAS o campo "cta". Deixe title, subtitle e body como strings vazias.',
-      completa: 'Preencha TODOS os campos: title, subtitle, body e cta.',
-    };
-
-    const sizeGuide: Record<string, string> = {
-      S: (body.channel === "instagram" && body.copy_type === "completa" && body.format === "static")
-        ? "Muito curto e conciso. Máximo absoluto de 150 caracteres no total da copy (somando todos os campos preenchidos). Seja direto e impactante."
-        : "Muito curto e conciso. Máximo 1-2 frases por campo.",
-      M: "Tamanho médio. 2-4 frases por campo.",
-      L: "Longo e detalhado. 4-6 frases por campo.",
-      XL: "Extra longo. 6+ frases, desenvolvimento completo.",
-    };
-
     const language = company.language || "pt-BR";
     const isEngagement = body.objective === "engajamento";
+
     // Load format from DB if format_id provided
     let formatRecord: any = null;
     if (body.format_id) {
@@ -208,7 +187,6 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
 3. NÃO faça ponte entre o conteúdo e os serviços/produtos da empresa no final.
 4. NÃO use terminologia exclusiva da empresa dentro da narrativa.
 5. NÃO transforme a moral da história em pitch.
-6. O campo "cta" DEVE ser sempre uma string vazia (""), independentemente do copy_type.
 
 ### O que este conteúdo DEVE ser
 - Uma história, análise ou reflexão que se sustenta sozinha
@@ -222,32 +200,29 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
       formatRules = `\n## FORMATO: ${formatRecord.name.toUpperCase()} (OBRIGATÓRIO)\n\n${formatRecord.prompt_instructions}\n`;
     }
 
-    // Video rules removed — now handled by formatRules from DB
+    const formatName = formatRecord?.name ?? body.format ?? "";
+    const isInstagram = body.channel === "instagram";
 
     const metaBlock = `"meta": {
     "channel": "${body.channel}",
     "objective": "${body.objective}",
-    "copy_type": "${body.copy_type}",
-    "size": "${body.size}",
+    "format": "${formatName}",
     "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
     "language": "${language}"
   }`;
-
-    const formatName = formatRecord?.name ?? body.format ?? "";
-    const isInstagram = body.channel === "instagram";
-    const captionField = isInstagram ? `,\n      "caption": "Legenda do post com hashtags relevantes"` : "";
 
     let outputFormat: string;
     if (hasFormatInstructions) {
       outputFormat = `{
   "copies": [
-    { ... fields as defined by the format instructions below ... ${isInstagram ? ', "caption": "..."' : ''} }
+    { /* fields as defined by the format instructions below */ ${isInstagram ? ', "caption": "Legenda com hashtags"' : ''} }
   ],
   ${metaBlock}
 }
 
-IMPORTANT: Follow the format rules below for the structure of each copy object. Use field names that match the structure defined in the format instructions. Each element in the "copies" array must be ONE COMPLETE unit of the format (e.g., one full carousel with all slides, one full ad with all components).${isInstagram ? ' Always include a "caption" field for Instagram.' : ''}`;
+IMPORTANT: The format instructions below define the EXACT structure and fields for each copy object. Follow them precisely. Each element in the "copies" array must be ONE COMPLETE unit of the format (e.g., for a carousel, one copy = all slides together; for an ad, one copy = all components). The quantity requested controls how many complete copy OPTIONS to generate in the array.${isInstagram ? ' Always include a "caption" field with a relevant caption and hashtags for each copy, unless the format instructions already define a caption/legenda field.' : ''}`;
     } else {
+      const captionField = isInstagram ? `,\n      "caption": "Legenda do post com hashtags relevantes"` : "";
       outputFormat = `{
   "copies": [
     {"title": "...", "subtitle": "...", "body": "...", "cta": "..."${captionField}}
@@ -270,6 +245,7 @@ ${isInstagram ? `\n## REGRA INSTAGRAM — LEGENDA (OBRIGATÓRIO)\nQuando o canal
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
+
     const userPrompt = `Gere ${body.quantity} copy(ies) para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
@@ -295,11 +271,9 @@ ${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editor
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
 ${formatName ? `**Formato:** ${formatName}` : ""}
-**Tipo:** ${body.copy_type}
-**Tamanho:** ${body.size} — ${sizeGuide[body.size]}
 **Quantidade:** ${body.quantity}
 
-${hasFormatInstructions ? `Siga as regras de formato "${formatName}" definidas no system prompt para definir a estrutura e campos de cada copy.` : copyTypeInstructions[body.copy_type]}
+${hasFormatInstructions ? `Siga as regras de formato "${formatName}" definidas no system prompt para definir a estrutura e campos de cada copy.` : 'Preencha TODOS os campos: title, subtitle, body e cta.'}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 
@@ -362,9 +336,10 @@ Retorne APENAS o JSON no formato especificado.`;
       copywriter_b_id: copywriterIds[1] || null,
       channel: body.channel,
       objective: body.objective,
-      copy_type: body.copy_type,
-      size: body.size,
+      copy_type: "completa",
+      size: "M",
       quantity: body.quantity,
+      format: body.format || null,
       prompt_compiled: promptCompiled,
       result_json: resultJson,
     });

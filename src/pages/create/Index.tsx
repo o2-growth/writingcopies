@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateCopySchema, type GenerateCopyInput } from '@/lib/validators';
-import { COPY_TYPES, SIZES, OBJECTIVES, CHANNELS } from '@/lib/constants';
+import { OBJECTIVES, CHANNELS } from '@/lib/constants';
 import { useProducts } from '@/hooks/useProducts';
 import { useChampionExamples } from '@/hooks/useChampionExamples';
 import { useCopywriters } from '@/hooks/useCopywriters';
@@ -44,8 +44,6 @@ export default function CreatePage() {
       profile: 'company',
       copywriter_ids: [],
       quantity: 1,
-      copy_type: 'completa',
-      size: 'M',
       objective: 'conversao',
       channel: 'instagram',
       format: undefined,
@@ -162,8 +160,8 @@ export default function CreatePage() {
         body: fullBody,
         channel: lastInput.channel,
         objective: lastInput.objective,
-        copy_type: lastInput.copy_type,
-        size: lastInput.size,
+        copy_type: 'completa',
+        size: 'M',
         format: lastInput.format || null,
         product_id: lastInput.product_id || null,
         copywriter_a_id: lastInput.copywriter_ids[0] || null,
@@ -211,40 +209,7 @@ export default function CreatePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label>Produto</Label>
-            <Controller
-              name="product_id"
-              control={control}
-              render={({ field }) => (
-                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
-                  <SelectTrigger><SelectValue placeholder="Selecionar produto" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sem produto</SelectItem>
-                    {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Linha Editorial</Label>
-            <Controller
-              name="editorial_line_id"
-              control={control}
-              render={({ field }) => (
-                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
-                  <SelectTrigger><SelectValue placeholder="Selecionar linha editorial" /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Sem linha editorial</SelectItem>
-                    {editorialLines.map(el => <SelectItem key={el.id} value={el.id}>{el.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-
+          {/* Canal */}
           <div className="space-y-2">
             <Label>Canal</Label>
             <Controller
@@ -261,6 +226,7 @@ export default function CreatePage() {
             />
           </div>
 
+          {/* Objetivo */}
           <div className="space-y-2">
             <Label>Objetivo</Label>
             <Controller
@@ -277,40 +243,25 @@ export default function CreatePage() {
             />
           </div>
 
-          {(
-            <div className="space-y-2">
-              <Label>Tipo</Label>
-              <Controller
-                name="copy_type"
-                control={control}
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {COPY_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </div>
-          )}
-
+          {/* Formato */}
           <div className="space-y-2">
-            <Label>Tamanho</Label>
+            <Label>Formato</Label>
             <Controller
-              name="size"
+              name="format"
               control={control}
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar formato" /></SelectTrigger>
                   <SelectContent>
-                    {SIZES.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}
+                    <SelectItem value="none">Não definir</SelectItem>
+                    {availableFormats.map(f => <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}
             />
           </div>
 
+          {/* Quantidade */}
           <div className="space-y-2">
             <Label>Quantidade</Label>
             <Controller
@@ -331,17 +282,36 @@ export default function CreatePage() {
             />
           </div>
 
+          {/* Produto */}
           <div className="space-y-2">
-            <Label>Formato</Label>
+            <Label>Produto</Label>
             <Controller
-              name="format"
+              name="product_id"
               control={control}
               render={({ field }) => (
                 <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
-                  <SelectTrigger><SelectValue placeholder="Selecionar formato" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Selecionar produto" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">Não definir</SelectItem>
-                    {availableFormats.map(f => <SelectItem key={f.value} value={f.value}>{f.name}</SelectItem>)}
+                    <SelectItem value="none">Sem produto</SelectItem>
+                    {products.map(p => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+
+          {/* Linha Editorial */}
+          <div className="space-y-2">
+            <Label>Linha Editorial</Label>
+            <Controller
+              name="editorial_line_id"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar linha editorial" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Sem linha editorial</SelectItem>
+                    {editorialLines.map(el => <SelectItem key={el.id} value={el.id}>{el.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}
@@ -349,6 +319,7 @@ export default function CreatePage() {
           </div>
         </div>
 
+        {/* Copywriters */}
         <div className="space-y-2">
           <Label>Copywriters (máx. 2)</Label>
           <div className="flex flex-wrap gap-2">
