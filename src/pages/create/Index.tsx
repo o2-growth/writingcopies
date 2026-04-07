@@ -66,6 +66,7 @@ export default function CreatePage() {
     && productChampionExamples.length > 0;
 
   const availableFormats = formats.filter(f => {
+    if (!selectedChannel) return true;
     if (!f.channels || f.channels.length === 0) return true;
     return f.channels.includes(selectedChannel);
   });
