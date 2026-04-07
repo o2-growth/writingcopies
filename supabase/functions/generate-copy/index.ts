@@ -14,7 +14,7 @@ function validateBody(body: any) {
 
   if (body.product_id && typeof body.product_id !== "string") errors.push("product_id inválido");
   if (!Array.isArray(body.copywriter_ids) || body.copywriter_ids.length > 2) errors.push("copywriter_ids: array max 2");
-  if (!channels.includes(body.channel)) errors.push("channel inválido");
+  if (body.channel && !channels.includes(body.channel)) errors.push("channel inválido");
   if (!objectives.includes(body.objective)) errors.push("objective inválido");
   if (!Number.isInteger(body.quantity) || body.quantity < 1 || body.quantity > 5) errors.push("quantity: 1-5");
   if (body.editorial_line_id && typeof body.editorial_line_id !== "string") errors.push("editorial_line_id inválido");
@@ -201,10 +201,11 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
     }
 
     const formatName = formatRecord?.name ?? body.format ?? "";
-    const isInstagram = body.channel === "instagram";
+    const channelValue = body.channel || null;
+    const isInstagram = channelValue === "instagram";
 
     const metaBlock = `"meta": {
-    "channel": "${body.channel}",
+    "channel": "${channelValue || "geral"}",
     "objective": "${body.objective}",
     "format": "${formatName}",
     "copywriters": [${copywriterA ? `"${copywriterA.name}"` : ""}${copywriterB ? `, "${copywriterB.name}"` : ""}],
@@ -242,6 +243,7 @@ ${blendInstructions}
 ${engagementRules}
 ${formatRules}
 ${isInstagram ? `\n## REGRA INSTAGRAM — LEGENDA (OBRIGATÓRIO)\nQuando o canal for Instagram, SEMPRE inclua um campo "caption" em cada copy. A legenda deve:\n- Ser envolvente e complementar o conteúdo visual\n- Incluir hashtags relevantes ao final (5-10 hashtags)\n- Ter tom adequado ao objetivo e ao estilo dos copywriters selecionados\n- NÃO repetir o texto dos slides ou do corpo da copy\n` : ''}
+${channelValue ? '' : '## CANAL NÃO ESPECIFICADO\nNenhum canal foi definido. Gere a copy de forma genérica, sem regras específicas de canal. O formato selecionado já contém todas as instruções necessárias.'}
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
@@ -268,7 +270,7 @@ ${editorialLine.objective ? `Objetivo da linha: ${editorialLine.objective}` : ""
 ${editorialLine.content_style ? `Estilo do conteúdo: ${editorialLine.content_style}` : ""}
 ${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editorialChampionExamples.map((e: any, i: number) => `${i+1}. [Canal: ${e.channel} | Formato: ${e.format}] "${e.body.substring(0, 500)}"`).join('\n')}` : ""}` : ""}
 
-**Canal:** ${body.channel}
+${channelValue ? `**Canal:** ${channelValue}` : ''}
 **Objetivo:** ${body.objective}
 ${formatName ? `**Formato:** ${formatName}` : ""}
 **Quantidade:** ${body.quantity}
@@ -334,7 +336,7 @@ Retorne APENAS o JSON no formato especificado.`;
       product_id: body.product_id || null,
       copywriter_a_id: copywriterIds[0] || null,
       copywriter_b_id: copywriterIds[1] || null,
-      channel: body.channel,
+      channel: channelValue || "geral",
       objective: body.objective,
       copy_type: "completa",
       size: "M",

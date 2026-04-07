@@ -45,7 +45,7 @@ export default function CreatePage() {
       copywriter_ids: [],
       quantity: 1,
       objective: 'conversao',
-      channel: 'instagram',
+      channel: undefined,
       format: undefined,
     },
   });
@@ -66,6 +66,7 @@ export default function CreatePage() {
     && productChampionExamples.length > 0;
 
   const availableFormats = formats.filter(f => {
+    if (!selectedChannel) return true;
     if (!f.channels || f.channels.length === 0) return true;
     return f.channels.includes(selectedChannel);
   });
@@ -216,9 +217,10 @@ export default function CreatePage() {
               name="channel"
               control={control}
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select value={field.value ?? 'none'} onValueChange={v => field.onChange(v === 'none' ? undefined : v)}>
+                  <SelectTrigger><SelectValue placeholder="Selecionar canal" /></SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="none">Sem canal específico</SelectItem>
                     {CHANNELS.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
                   </SelectContent>
                 </Select>
