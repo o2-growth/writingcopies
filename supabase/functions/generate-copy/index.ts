@@ -189,7 +189,7 @@ serve(async (req) => {
       formatRecord = fmt;
     }
 
-    const hasScriptOutput = formatRecord?.has_script_output ?? false;
+    const hasFormatInstructions = !!(formatRecord?.prompt_instructions);
 
     const engagementRules = isEngagement ? `
 ## REGRAS DE ENGAJAMENTO PURO (OBRIGATÓRIO)
@@ -233,19 +233,20 @@ O conteúdo tem objetivo de engajamento puro: gerar valor, construir autoridade,
     "language": "${language}"
   }`;
 
-    // Determine output format based on format record
     const formatName = formatRecord?.name ?? body.format ?? "";
     const isInstagram = body.channel === "instagram";
     const captionField = isInstagram ? `,\n      "caption": "Legenda do post com hashtags relevantes"` : "";
 
     let outputFormat: string;
-    if (hasScriptOutput) {
+    if (hasFormatInstructions) {
       outputFormat = `{
   "copies": [
-    {"script": "..."${captionField}}
+    { ... fields as defined by the format instructions below ... ${isInstagram ? ', "caption": "..."' : ''} }
   ],
   ${metaBlock}
-}`;
+}
+
+IMPORTANT: Follow the format rules below for the structure of each copy object. Use field names that match the structure defined in the format instructions. Each element in the "copies" array must be ONE COMPLETE unit of the format (e.g., one full carousel with all slides, one full ad with all components).${isInstagram ? ' Always include a "caption" field for Instagram.' : ''}`;
     } else {
       outputFormat = `{
   "copies": [
@@ -269,7 +270,7 @@ ${isInstagram ? `\n## REGRA INSTAGRAM — LEGENDA (OBRIGATÓRIO)\nQuando o canal
 
 ## Formato de saída OBRIGATÓRIO:
 ${outputFormat}`;
-    const userPrompt = `Gere ${body.quantity} ${hasScriptOutput ? 'roteiro(s)' : 'copy(ies)'} para:
+    const userPrompt = `Gere ${body.quantity} copy(ies) para:
 
 ${isEngagement ? `**Voz/tom de referência:** ${company.brand_voice}` : `**Marca:** ${company.brand_name}
 **Voz da marca:** ${company.brand_voice}`}
@@ -298,8 +299,7 @@ ${formatName ? `**Formato:** ${formatName}` : ""}
 **Tamanho:** ${body.size} — ${sizeGuide[body.size]}
 **Quantidade:** ${body.quantity}
 
-${hasScriptOutput ? `Siga as regras de ${formatName || 'roteiro'} definidas no system prompt.` : copyTypeInstructions[body.copy_type]}
-${formatRecord?.prompt_instructions ? `\nSiga também as regras de formato "${formatName}" definidas no system prompt.` : ''}
+${hasFormatInstructions ? `Siga as regras de formato "${formatName}" definidas no system prompt para definir a estrutura e campos de cada copy.` : copyTypeInstructions[body.copy_type]}
 
 ${body.extra_context ? `**Contexto adicional:** ${body.extra_context}` : ""}
 
