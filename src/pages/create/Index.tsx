@@ -56,7 +56,6 @@ export default function CreatePage() {
   const selectedChannel = watch('channel');
   const selectedFormat = watch('format');
   const selectedFormatObj = formats.find(f => f.value === selectedFormat);
-  const isScriptFormat = selectedFormatObj?.has_script_output ?? false;
   const selectedProductId = watch('product_id');
   const selectedObjective = watch('objective');
 
@@ -116,7 +115,10 @@ export default function CreatePage() {
     setRegeneratingIndex(index);
     try {
       const originalCopy = results.copies[index];
-      const originalText = [originalCopy.title, originalCopy.subtitle, originalCopy.body, originalCopy.cta, originalCopy.script].filter(Boolean).join('\n');
+      const originalText = Object.entries(originalCopy)
+        .filter(([, v]) => v && typeof v === 'string')
+        .map(([, v]) => v)
+        .join('\n');
 
       const rewriteContext = `REESCRITA SOLICITADA. A copy anterior foi reprovada. Segue a copy original:\n---\n${originalText}\n---\nMotivo da reprovação / instruções de reescrita:\n${feedback}\n\nGere uma nova versão corrigida seguindo essas instruções.`;
 
@@ -144,16 +146,19 @@ export default function CreatePage() {
   const handleSaveApproved = async ({ tags, notes }: { tags: string[]; notes: string }) => {
     if (!lastInput || !approveModal.copy) return;
     try {
-      const isVideo = typeof approveModal.copy.script === 'string' && approveModal.copy.script.length > 0;
-      const contentBody = isVideo
-        ? approveModal.copy.script
-        : [approveModal.copy.title, approveModal.copy.subtitle, approveModal.copy.body, approveModal.copy.cta]
-          .filter(Boolean).join('\n\n');
-      const fullBody = approveModal.copy.caption
-        ? `${contentBody}\n\n**Legenda:**\n${approveModal.copy.caption}`
-        : contentBody;
+      const copyObj = approveModal.copy;
+      const { caption, ...mainFields } = copyObj;
+      const contentParts = Object.entries(mainFields)
+        .filter(([, v]) => v && v !== '')
+        .map(([k, v]) => {
+          if (Array.isArray(v)) return `**${k}:**\n${v.map((item: any, i: number) => typeof item === 'object' ? Object.entries(item).map(([ik, iv]) => `${ik}: ${iv}`).join(' | ') : `${i + 1}. ${item}`).join('\n')}`;
+          if (typeof v === 'object' && v !== null) return `**${k}:**\n${Object.entries(v).map(([ik, iv]) => `${ik}: ${iv}`).join('\n')}`;
+          return String(v);
+        });
+      const contentBody = contentParts.join('\n\n');
+      const fullBody = caption ? `${contentBody}\n\n**Legenda:**\n${caption}` : contentBody;
       await approve.mutateAsync({
-        title: isVideo ? 'Roteiro de Vídeo' : (approveModal.copy.title || null),
+        title: copyObj.title || copyObj.headline || null,
         body: fullBody,
         channel: lastInput.channel,
         objective: lastInput.objective,
@@ -272,7 +277,7 @@ export default function CreatePage() {
             />
           </div>
 
-          {!isScriptFormat && (
+          {(
             <div className="space-y-2">
               <Label>Tipo</Label>
               <Controller
