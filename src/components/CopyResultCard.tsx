@@ -5,21 +5,88 @@ import { Textarea } from '@/components/ui/textarea';
 import { Copy, Check, Star, ThumbsDown, Send, X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-interface CopyResult {
-  title?: string;
-  subtitle?: string;
-  body?: string;
-  cta?: string;
-  script?: string;
-  caption?: string;
-}
-
 interface Props {
-  copy: CopyResult;
+  copy: Record<string, any>;
   index: number;
-  onApprove: (copy: CopyResult) => void;
+  onApprove: (copy: Record<string, any>) => void;
   onReject?: (index: number, feedback: string) => Promise<void>;
   isRegenerating?: boolean;
+}
+
+const FIELD_LABELS: Record<string, string> = {
+  title: 'Título',
+  subtitle: 'Subtítulo',
+  body: 'Corpo',
+  cta: 'CTA',
+  script: 'Roteiro',
+  caption: 'Legenda',
+  headline: 'Headline',
+  primary_text: 'Texto Principal',
+  description: 'Descrição',
+  slides: 'Slides',
+};
+
+function formatFieldLabel(key: string): string {
+  return FIELD_LABELS[key] || key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function renderFieldValue(key: string, value: any): React.ReactNode {
+  if (Array.isArray(value)) {
+    return (
+      <div className="space-y-2">
+        {value.map((item, i) => (
+          <div key={i} className="pl-3 border-l-2 border-border">
+            {typeof item === 'object' && item !== null ? (
+              Object.entries(item).map(([k, v]) => (
+                <div key={k}>
+                  <span className="text-xs font-semibold text-muted-foreground uppercase">{formatFieldLabel(k)}: </span>
+                  <span className="text-foreground">{String(v)}</span>
+                </div>
+              ))
+            ) : (
+              <p className="text-foreground">{String(item)}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (typeof value === 'object' && value !== null) {
+    return (
+      <div className="space-y-1">
+        {Object.entries(value).map(([k, v]) => (
+          <div key={k}>
+            <span className="text-xs font-semibold text-muted-foreground uppercase">{formatFieldLabel(k)}: </span>
+            <span className="text-foreground">{String(v)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return <p className="text-foreground whitespace-pre-wrap">{String(value)}</p>;
+}
+
+function copyToText(copy: Record<string, any>): string {
+  const parts: string[] = [];
+  for (const [key, value] of Object.entries(copy)) {
+    if (!value || (typeof value === 'string' && value.trim() === '')) continue;
+    if (Array.isArray(value)) {
+      parts.push(`**${formatFieldLabel(key)}:**`);
+      value.forEach((item, i) => {
+        if (typeof item === 'object' && item !== null) {
+          parts.push(Object.entries(item).map(([k, v]) => `${formatFieldLabel(k)}: ${v}`).join(' | '));
+        } else {
+          parts.push(`${i + 1}. ${String(item)}`);
+        }
+      });
+    } else if (typeof value === 'object' && value !== null) {
+      parts.push(`**${formatFieldLabel(key)}:**`);
+      parts.push(Object.entries(value).map(([k, v]) => `${formatFieldLabel(k)}: ${v}`).join('\n'));
+    } else {
+      parts.push(`**${formatFieldLabel(key)}:**\n${String(value)}`);
+    }
+  }
+  return parts.join('\n\n');
 }
 
 export default function CopyResultCard({ copy, index, onApprove, onReject, isRegenerating }: Props) {
@@ -27,16 +94,8 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [feedback, setFeedback] = useState('');
 
-  const isVideo = typeof copy.script === 'string' && copy.script.length > 0;
-
-  const contentText = isVideo
-    ? copy.script!
-    : [copy.title, copy.subtitle, copy.body, copy.cta].filter(Boolean).join('\n\n');
-
-  const fullText = copy.caption ? `${contentText}\n\n**Legenda:**\n${copy.caption}` : contentText;
-
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(fullText);
+    await navigator.clipboard.writeText(copyToText(copy));
     setCopied(true);
     toast.success('Copiado!');
     setTimeout(() => setCopied(false), 2000);
@@ -54,12 +113,18 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
     }
   };
 
+  // Separate caption to render at the bottom with a divider
+  const { caption, ...mainFields } = copy;
+  const fieldsToRender = Object.entries(mainFields).filter(
+    ([, value]) => value !== null && value !== undefined && value !== ''
+  );
+
   return (
     <Card className={`border-border ${isRegenerating ? 'opacity-60 pointer-events-none' : ''}`}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">
-            {isVideo ? `Roteiro #${index + 1}` : `Copy #${index + 1}`}
+            Copy #{index + 1}
             {isRegenerating && <Loader2 className="inline ml-2 h-4 w-4 animate-spin" />}
           </CardTitle>
           <div className="flex gap-2">
@@ -102,43 +167,16 @@ export default function CopyResultCard({ copy, index, onApprove, onReject, isReg
         )}
       </CardHeader>
       <CardContent className="space-y-3">
-        {isVideo ? (
-          <div>
-            <p className="text-xs font-semibold text-muted-foreground uppercase">Roteiro</p>
-            <p className="text-foreground whitespace-pre-wrap">{copy.script}</p>
+        {fieldsToRender.map(([key, value]) => (
+          <div key={key}>
+            <p className="text-xs font-semibold text-muted-foreground uppercase">{formatFieldLabel(key)}</p>
+            {renderFieldValue(key, value)}
           </div>
-        ) : (
-          <>
-            {copy.title && (
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">Título</p>
-                <p className="text-foreground font-medium">{copy.title}</p>
-              </div>
-            )}
-            {copy.subtitle && (
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">Subtítulo</p>
-                <p className="text-foreground">{copy.subtitle}</p>
-              </div>
-            )}
-            {copy.body && (
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">Corpo</p>
-                <p className="text-foreground whitespace-pre-wrap">{copy.body}</p>
-              </div>
-            )}
-            {copy.cta && (
-              <div>
-                <p className="text-xs font-semibold text-muted-foreground uppercase">CTA</p>
-                <p className="text-primary font-semibold">{copy.cta}</p>
-              </div>
-            )}
-          </>
-        )}
-        {copy.caption && (
+        ))}
+        {caption && (
           <div className="mt-4 border-t border-border pt-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase">Legenda</p>
-            <p className="text-foreground whitespace-pre-wrap">{copy.caption}</p>
+            <p className="text-foreground whitespace-pre-wrap">{String(caption)}</p>
           </div>
         )}
       </CardContent>
