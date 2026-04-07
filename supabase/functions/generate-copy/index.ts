@@ -294,7 +294,7 @@ ${editorialChampionExamples.length > 0 ? `Exemplos de copies campeãs:\n${editor
 **Canal:** ${body.channel}
 **Objetivo:** ${body.objective}
 ${formatName ? `**Formato:** ${formatName}` : ""}
-${isCarousel ? '' : `**Tipo:** ${body.copy_type}`}
+**Tipo:** ${body.copy_type}
 **Tamanho:** ${body.size} — ${sizeGuide[body.size]}
 **Quantidade:** ${body.quantity}
 
