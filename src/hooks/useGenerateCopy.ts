@@ -10,12 +10,10 @@ export function useGenerateCopy() {
       });
       if (error) throw new Error(error.message || 'Erro ao gerar copy');
       return data as {
-        copies: Array<{ title: string; subtitle: string; body: string; cta: string }>;
+        copies: Array<Record<string, any>>;
         meta: {
           channel: string;
           objective: string;
-          copy_type: string;
-          size: string;
           copywriters: string[];
           language: string;
         };

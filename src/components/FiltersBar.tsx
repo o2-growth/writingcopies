@@ -5,14 +5,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CHANNELS, OBJECTIVES, COPY_TYPES } from '@/lib/constants';
+import { CHANNELS, OBJECTIVES } from '@/lib/constants';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
 interface Filters {
   channel?: string;
   objective?: string;
-  copy_type?: string;
   product_id?: string;
 }
 
@@ -40,14 +39,6 @@ export default function FiltersBar({ filters, onChange, products }: Props) {
         <SelectContent>
           <SelectItem value="all">Todos objetivos</SelectItem>
           {OBJECTIVES.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
-        </SelectContent>
-      </Select>
-
-      <Select value={filters.copy_type ?? 'all'} onValueChange={v => onChange({ ...filters, copy_type: v === 'all' ? undefined : v })}>
-        <SelectTrigger className="w-40"><SelectValue placeholder="Tipo" /></SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">Todos tipos</SelectItem>
-          {COPY_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
         </SelectContent>
       </Select>
 

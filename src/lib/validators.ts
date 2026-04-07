@@ -9,8 +9,6 @@ export const generateCopySchema = z.object({
   copywriter_ids: z.array(z.string().uuid()).min(0).max(2),
   channel: z.enum(['twitter', 'instagram', 'linkedin', 'email', 'whatsapp']),
   objective: z.enum(['awareness', 'engajamento', 'leads', 'conversao', 'vendas']),
-  copy_type: z.enum(['titulo', 'subtitulo', 'corpo', 'cta', 'completa']),
-  size: z.enum(['S', 'M', 'L', 'XL']),
   format: z.string().optional(),
   format_id: z.string().uuid().optional(),
   use_best_ads: z.boolean().optional(),
